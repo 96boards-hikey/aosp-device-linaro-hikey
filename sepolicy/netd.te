@@ -1,0 +1,5 @@
+allow netd usermodehelper:file r_file_perms;
+allow netd debug_prop:property_service set;
+allow netd kernel:system module_request;
+allow netd gatord:fd use;
+allow netd gatord:tcp_socket rw_socket_perms;

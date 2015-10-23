@@ -1,0 +1,2 @@
+allow logd property_socket:sock_file write;
+allow logd init:unix_stream_socket connectto;

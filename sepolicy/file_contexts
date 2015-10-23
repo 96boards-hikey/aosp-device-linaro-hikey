@@ -1,0 +1,8 @@
+/data/linaro-android-kernel-test(/.*)?	u:object_r:shell_data_file:s0
+/data/linaro-android-userspace-test(/.*)?	u:object_r:shell_data_file:s0
+/data/nativebenchmark(/.*)?	u:object_r:shell_data_file:s0
+/dev/ttyAMA0   u:object_r:console_device:s0
+/dev/ttyAMA3   u:object_r:console_device:s0
+/dev/mali              u:object_r:gpu_device:s0
+/dev/dri/card0         u:object_r:gpu_device:s0
+/dev/hci_tty           u:object_r:hci_attach_dev:s0

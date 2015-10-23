@@ -1,0 +1,159 @@
+on init
+    # mount debugfs
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+    setprop wifi.interface wlan0
+
+    # Set this property so AdvancedWifiSettings would show the checkbox
+    # for Enable/Disable Active Roaming
+    setprop ro.wifi.active_roaming.enable true
+
+    # disable transparent huge pages
+    write /sys/kernel/mm/transparent_hugepage/enabled "never"
+
+    # See storage config details at http://source.android.com/tech/storage/
+    symlink /sdcard /mnt/sdcard
+    symlink /sdcard /storage/sdcard0
+
+
+    # Disabled virtual memory randomization
+    # (if randomization is enabled the AEM-JIT will have a lower cache hit rate)
+    write /proc/sys/kernel/randomize_va_space 0
+
+#bluetooth
+   #UART device
+   chmod 0660 /dev/ttyAMA1
+   chown bluetooth net_bt_stack /dev/ttyAMA1
+
+on fs
+    mount_all /fstab.hikey
+    setprop ro.crypto.fuse_sdcard false
+
+    mount configfs none /sys/kernel/config
+    mkdir /sys/kernel/config/usb_gadget/g1
+    mkdir /sys/kernel/config/usb_gadget/g1/functions/ffs.adb
+
+    mkdir /dev/usb-ffs 0770 shell shell
+    mkdir /dev/usb-ffs/adb 0770 shell shell
+    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+
+    write /sys/kernel/config/usb_gadget/g1/idVendor 0x12d1
+    write /sys/kernel/config/usb_gadget/g1/idProduct 0x103a
+    mkdir /sys/kernel/config/usb_gadget/g1/strings/0x409
+    write /sys/kernel/config/usb_gadget/g1/strings/0x409/serialnumber "0123456789"
+    write /sys/kernel/config/usb_gadget/g1/strings/0x409/manufacturer "HISILICON"
+    write /sys/kernel/config/usb_gadget/g1/strings/0x409/product "ADB Gadget"
+
+    mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1
+    mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409
+    write /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409/configuration "Conf 1"
+    symlink /sys/kernel/config/usb_gadget/g1/functions/ffs.adb /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+    start adbd
+
+
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/misc/gatord 0700 root root
+    mkdir /data/misc/wireless 0771 system system
+    mkdir /data/misc/wifi 0771 wifi wifi
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    mkdir /data/misc/wifi/wapi_certs 0777 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    # Set SELinux security contexts for files used by lava.
+    restorecon_recursive /data/local/tmp/lava
+
+on post-fs
+    # insert WiFi Modules
+    insmod /system/modules/rfkill.ko
+    insmod /system/modules/wifi/compat.ko
+    insmod /system/modules/wifi/cfg80211.ko
+    insmod /system/modules/wifi/mac80211.ko
+    insmod /system/modules/wifi/wlcore.ko
+    insmod /system/modules/wifi/wl18xx.ko
+    insmod /system/modules/wifi/wlcore_sdio.ko
+
+    # BT LED sysfs entry
+    write /sys/devices/leds/leds/bt_active/trigger "hci1rx"
+
+    chmod 0666 /dev/ump
+    chmod 0666 /dev/ion
+    chmod 0666 /dev/mali
+    chown system.graphics /dev/mali
+    chmod 0666 /dev/graphics/fb0
+
+# fake some battery state
+    setprop status.battery.state Slow
+    setprop status.battery.level 5
+    setprop status.battery.level_raw  50
+    setprop status.battery.level_scale 9
+
+# Set Display density
+    setprop ro.sf.lcd_density 160
+
+# Set supported opengles version
+    setprop ro.opengles.version 196608
+
+# change permissions for process groups
+# https://bugs.launchpad.net/bugs/1037611
+    chmod 0660 /dev/cpuctl
+
+# enable Google-specific location features,
+# like NetworkLocationProvider and LocationCollector
+    setprop ro.com.google.locationfeatures 1
+
+# enable test harness
+    setprop ro.test_harness true
+
+    # Setup paths used for socket communication with the dhcp daemon (dhcpd)
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp dhcp /data/misc/dhcp
+
+on property:sys.usb.config=adb
+    write /sys/kernel/config/usb_gadget/g1/UDC "f72c0000.usb"
+    write /sys/class/udc/f72c0000.usb/soft_connect "disconnect"
+    write /sys/class/udc/f72c0000.usb/soft_connect "connect"
+    setprop sys.usb.state ${sys.usb.config}
+
+# FIXME: we need to bind the driver while adbd is restarted. We need delay else bind fails. Need to investigate
+on property:init.svc.adbd=running
+    wait /dev/socket/hack 1
+    write /sys/kernel/config/usb_gadget/g1/UDC "f72c0000.usb"
+    write /sys/class/udc/f72c0000.usb/soft_connect "disconnect"
+    write /sys/class/udc/f72c0000.usb/soft_connect "connect"
+    setprop sys.usb.state ${sys.usb.config}
+
+
+on property:usb_speed.switch=high
+    write /sys/kernel/debug/f72c0000.usb/config "0"
+
+on property:usb_speed.switch=full
+    write /sys/kernel/debug/f72c0000.usb/config "1"
+
+#userspace daemon needed for bluetooth
+service uim /system/bin/uim
+    class main
+    user root
+    oneshot
+
+service wpa_supplicant /system/bin/wpa_supplicant \
+     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+     -e/data/misc/wifi/entropy.bin  -g@android:wpa_wlan0
+     socket wpa_wlan0 dgram 660 wifi wifi
+     class main
+     disabled
+     oneshot
+
+service dhcpcd_wlan0 /system/bin/dhcpcd -dABKL
+     group dhcp
+     disabled
+     oneshot
+
+service dhcpcd_eth0 /system/bin/dhcpcd -dABKL
+     group dhcp
+     disabled
+     oneshot
+
+service dhcpcd_bt-pan /system/bin/dhcpcd -dABKL
+     group dhcp
+     disabled
+     oneshot
