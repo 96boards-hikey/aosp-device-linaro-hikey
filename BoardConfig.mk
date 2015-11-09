@@ -28,7 +28,6 @@ BOARD_HAVE_BLUETOOTH := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 CONFIG_DRIVER_NL80211 := y
-CONFIG_DRIVER_WEXT := y
 
 BOARD_KERNEL_CMDLINE := k3v2mem hisi_dma_print=0 vmalloc=484M no_irq_affinity loglevel=7 androidboot.hardware=hikey selinux=0
 
