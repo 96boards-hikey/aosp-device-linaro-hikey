@@ -74,7 +74,7 @@ PRODUCT_COPY_FILES +=  vendor/linaro/hikey/mali/64bit/libGLES_mali.so:system/lib
                        vendor/linaro/hikey/mali/32bit/libGLES_mali.so:system/lib/egl/libGLES_mali.so
 
 # Include BT modules
-$(call inherit-product-if-exists, hardware/ti/wpan/ti-wpan-products.mk)
+$(call inherit-product-if-exists, devices/linaro/hikey/wpan/ti-wpan-products.mk)
 
 # Build boot_fat partition image
 $(call inherit-product-if-exists, device/linaro/hikey/boot_fat.mk)
