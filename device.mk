@@ -76,9 +76,6 @@ PRODUCT_COPY_FILES +=  vendor/linaro/hikey/mali/64bit/libGLES_mali.so:system/lib
 # Include BT modules
 $(call inherit-product-if-exists, devices/linaro/hikey/wpan/ti-wpan-products.mk)
 
-# Build boot_fat partition image
-$(call inherit-product-if-exists, device/linaro/hikey/boot_fat.mk)
-
 PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
         frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
