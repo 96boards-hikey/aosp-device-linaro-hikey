@@ -84,6 +84,7 @@ PRODUCT_COPY_FILES += \
         device/linaro/hikey/bt-wifi-firmware-util/TIInit_11.8.32.bts:system/etc/firmware/TIInit_11.8.32.bts \
         device/linaro/hikey/bt-wifi-firmware-util/wl18xx-fw-4.bin:system/etc/firmware/ti-connectivity/wl18xx-fw-4.bin \
         device/linaro/hikey/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+        device/linaro/hikey/android_dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
         device/linaro/hikey/audio/audio_policy.conf:system/etc/audio_policy.conf
 
 # Copy media codecs config file
