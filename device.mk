@@ -49,10 +49,10 @@ PRODUCT_PACKAGES += audio.a2dp.default
 # Include USB speed switch App
 PRODUCT_PACKAGES += UsbSpeedSwitch
 
-# Build libion for new double-buffering HDLCD driver
+# Build libion
 PRODUCT_PACKAGES += libion
 
-# Build gralloc for Juno
+# Build gralloc for hikey 
 PRODUCT_PACKAGES += gralloc.hikey
 
 # Set zygote config
