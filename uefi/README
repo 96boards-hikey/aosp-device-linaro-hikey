@@ -1,0 +1,30 @@
+---------------------------------------------------------------------------------------------------------------
+Prerequisites:
+---------------------------------------------------------------------------------------------------------------
+ - GCC  cross-toolchain for Aarch64 and gnueabihf should be available in your PATH. The same can be got from here:
+   - http://releases.linaro.org/15.02/components/toolchain/binaries/aarch64-linux-gnu/gcc-linaro-4.9-2015.02-3-x86_64_aarch64-linux-gnu.tar.xz
+   - http://releases.linaro.org/15.02/components/toolchain/binaries/arm-linux-gnueabihf/gcc-linaro-4.9-2015.02-3-x86_64_arm-linux-gnueabihf.tar.xz
+ - GPT fdisk (gdisk package from your favorite distribution).
+
+
+---------------------------------------------------------------------------------------------------------------
+Building UEFI for Hikey:
+---------------------------------------------------------------------------------------------------------------
+export AARCH64_TOOLCHAIN=GCC49
+export EDK2_DIR=${PWD}/linaro-edk2
+export UEFI_TOOLS_DIR=${PWD}/uefi-tools
+cd ${EDK2_DIR}
+${UEFI_TOOLS_DIR}/uefi-build.sh -b RELEASE -a ../arm-trusted-firmware hikey
+cd ../l-loader
+ln -s ${EDK2_DIR}/Build/HiKey/RELEASE_GCC49/FV/bl1.bin
+ln -s ${EDK2_DIR}/Build/HiKey/RELEASE_GCC49/FV/fip.bin
+arm-linux-gnueabihf-gcc -c -o start.o start.S
+arm-linux-gnueabihf-gcc -c -o debug.o debug.S
+arm-linux-gnueabihf-ld -Bstatic -Tl-loader.lds -Ttext 0xf9800800 start.o debug.o -o loader
+arm-linux-gnueabihf-objcopy -O binary loader temp
+python gen_loader.py -o l-loader.bin --img_loader=temp --img_bl1=bl1.bin
+# XXX sgdisk usage requires sudo
+sudo PTABLE=aosp-4g bash -x generate_ptable.sh
+python gen_loader.py -o ptable-aosp.img --img_prm_ptable=prm_ptable.img
+
+The files fip.bin, l-loader.bin and ptable-aosp.img are now built. All the image files are in $BUILD/l-loader directory. The Fastboot App is at $EDK2_DIR/Build/HiKey/RELEASE_GCC49/AARCH64/AndroidFastbootApp.efi
