@@ -29,6 +29,7 @@ PRODUCT_COPY_FILES +=   $(LOCAL_KERNEL):kernel \
                         $(LOCAL_DTB):hi6220-hikey.dtb \
 			$(LOCAL_PATH)/fstab.hikey:root/fstab.hikey \
 			$(LOCAL_PATH)/init.hikey.rc:root/init.hikey.rc \
+			$(LOCAL_PATH)/init.hikey.usb.rc:root/init.hikey.usb.rc \
 			$(LOCAL_PATH)/ueventd.hikey.rc:root/ueventd.hikey.rc \
 			$(LOCAL_PATH)/hikey.kl:system/usr/keylayout/hikey.kl
 

@@ -1,3 +1,5 @@
+import init.hikey.usb.rc
+
 on init
     # mount debugfs
     mount debugfs /sys/kernel/debug /sys/kernel/debug
@@ -28,28 +30,6 @@ on init
 on fs
     mount_all /fstab.hikey
     setprop ro.crypto.fuse_sdcard false
-
-    mount configfs none /sys/kernel/config
-    mkdir /sys/kernel/config/usb_gadget/g1
-    mkdir /sys/kernel/config/usb_gadget/g1/functions/ffs.adb
-
-    mkdir /dev/usb-ffs 0770 shell shell
-    mkdir /dev/usb-ffs/adb 0770 shell shell
-    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
-
-    write /sys/kernel/config/usb_gadget/g1/idVendor 0x12d1
-    write /sys/kernel/config/usb_gadget/g1/idProduct 0x103a
-    mkdir /sys/kernel/config/usb_gadget/g1/strings/0x409
-    write /sys/kernel/config/usb_gadget/g1/strings/0x409/serialnumber "0123456789"
-    write /sys/kernel/config/usb_gadget/g1/strings/0x409/manufacturer "HISILICON"
-    write /sys/kernel/config/usb_gadget/g1/strings/0x409/product "ADB Gadget"
-
-    mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1
-    mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409
-    write /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409/configuration "Conf 1"
-    symlink /sys/kernel/config/usb_gadget/g1/functions/ffs.adb /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
-    start adbd
-
 
 on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
@@ -107,21 +87,6 @@ on post-fs
     # Setup paths used for socket communication with the dhcp daemon (dhcpd)
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
-
-on property:sys.usb.config=adb
-    write /sys/kernel/config/usb_gadget/g1/UDC "f72c0000.usb"
-    write /sys/class/udc/f72c0000.usb/soft_connect "disconnect"
-    write /sys/class/udc/f72c0000.usb/soft_connect "connect"
-    setprop sys.usb.state ${sys.usb.config}
-
-# FIXME: we need to bind the driver while adbd is restarted. We need delay else bind fails. Need to investigate
-on property:init.svc.adbd=running
-    wait /dev/socket/hack 1
-    write /sys/kernel/config/usb_gadget/g1/UDC "f72c0000.usb"
-    write /sys/class/udc/f72c0000.usb/soft_connect "disconnect"
-    write /sys/class/udc/f72c0000.usb/soft_connect "connect"
-    setprop sys.usb.state ${sys.usb.config}
-
 
 on property:usb_speed.switch=high
     write /sys/kernel/debug/f72c0000.usb/config "0"
