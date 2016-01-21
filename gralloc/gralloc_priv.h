@@ -147,7 +147,8 @@ struct private_handle_t
 	{
 		LOCK_STATE_WRITE     =   1 << 31,
 		LOCK_STATE_MAPPED    =   1 << 30,
-		LOCK_STATE_READ_MASK =   0x3FFFFFFF
+		LOCK_STATE_UNREGISTERED  =   1 << 29,
+		LOCK_STATE_READ_MASK =   0x1FFFFFFF
 	};
 
 	// ints

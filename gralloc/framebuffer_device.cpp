@@ -420,7 +420,7 @@ static int fb_close(struct hw_device_t *device)
 #if GRALLOC_ARM_UMP_MODULE
 		ump_close();
 #endif
-		delete dev;
+		free(dev);
 	}
 
 	return 0;
@@ -468,7 +468,7 @@ int framebuffer_device_open(hw_module_t const *module, const char *name, hw_devi
 	}
 
 	/* initialize our state here */
-	framebuffer_device_t *dev = (framebuffer_device_t*)malloc(sizeof(framebuffer_device_t));
+	framebuffer_device_t *dev = (framebuffer_device_t *)malloc(sizeof(framebuffer_device_t));
 	memset(dev, 0, sizeof(*dev));
 
 	/* initialize the procs */
