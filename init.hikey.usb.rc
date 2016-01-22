@@ -38,37 +38,37 @@ on property:init.svc.adbd=stopped
 on property:sys.usb.config=mtp && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/functions/mtp.gs0/os_desc/interface.MTP/compatible_id "MTP"
     write /config/usb_gadget/g1/os_desc/use 1
-    write /config/usb_gadget/g1/idProduct 0x5202
+    write /config/usb_gadget/g1/idProduct 0x4ee1
 
 on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/functions/mtp.gs0/os_desc/interface.MTP/compatible_id "MTP"
     write /config/usb_gadget/g1/os_desc/use 1
-    write /config/usb_gadget/g1/idProduct 0x5203
+    write /config/usb_gadget/g1/idProduct 0x4ee2
 
 on property:sys.usb.config=rndis && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x5204
+    write /config/usb_gadget/g1/idProduct 0x4ee3
 
 on property:sys.usb.config=rndis,adb && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x5205
+    write /config/usb_gadget/g1/idProduct 0x4ee4
 
 on property:sys.usb.config=ptp && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/functions/ptp.gs1/os_desc/interface.MTP/compatible_id "PTP"
     write /config/usb_gadget/g1/os_desc/use 1
-    write /config/usb_gadget/g1/idProduct 0x5206
+    write /config/usb_gadget/g1/idProduct 0x4ee5
 
 on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/functions/ptp.gs1/os_desc/interface.MTP/compatible_id "PTP"
     write /config/usb_gadget/g1/os_desc/use 1
-    write /config/usb_gadget/g1/idProduct 0x5207
+    write /config/usb_gadget/g1/idProduct 0x4ee6
 
 on property:sys.usb.config=adb && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x5208
+    write /config/usb_gadget/g1/idProduct 0x4ee7
 
 on property:sys.usb.config=midi && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x5209
+    write /config/usb_gadget/g1/idProduct 0x4ee8
 
 on property:sys.usb.config=midi,adb && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x520a
+    write /config/usb_gadget/g1/idProduct 0x4ee9
 
 on property:sys.usb.config=accessory && property:sys.usb.configfs=1
     write /config/usb_gadget/g1/idProduct 0x2d00
