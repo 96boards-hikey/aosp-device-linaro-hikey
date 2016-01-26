@@ -46,3 +46,9 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_USE_PAN_DISPLAY := true
 
 BOARD_SEPOLICY_DIRS := device/linaro/hikey/sepolicy
+
+ifeq ($(HOST_OS), linux)
+ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := squashfs
+endif
+endif
