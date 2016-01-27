@@ -11,10 +11,19 @@ if [ ! -e $1 ]
     exit
 fi
 
+PTABLE=ptable-aosp-8g.img
+if [ $# -gt 1 ]
+  then
+    if [ $2 == '4g' ]
+      then
+        PTABLE=ptable-aosp-4g.img
+    fi
+fi
+
 INSTALLER_DIR="`dirname $0`"
 ANDROID_TOP=${INSTALLER_DIR}/../../../../
 python ${INSTALLER_DIR}/hisi-idt.py --img1=${INSTALLER_DIR}/l-loader.bin -d ${1}
-fastboot flash ptable ${INSTALLER_DIR}/ptable-aosp.img
+fastboot flash ptable ${INSTALLER_DIR}/${PTABLE}
 fastboot flash fastboot ${INSTALLER_DIR}/fip.bin
 fastboot flash nvme ${INSTALLER_DIR}/nvme.img
 fastboot flash boot ${ANDROID_TOP}/out/target/product/hikey/boot_fat.uefi.img

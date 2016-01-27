@@ -33,6 +33,6 @@ $ dmesg
 
 Run the flash-all.sh script after building AOSP for hikey with the right
 right UART recognised in the above command:
-$ ./flash-all.sh /dev/ttyUSBX
+$ ./flash-all.sh /dev/ttyUSBX [4g]
 
 Remove the link 3-4 and power on the board.
