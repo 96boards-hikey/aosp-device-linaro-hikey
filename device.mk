@@ -70,9 +70,8 @@ PRODUCT_COPY_FILES +=  \
         frameworks/native/data/etc/android.software.backup.xml:system/etc/permissions/android.software.backup.xml \
         frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
-#Copy Graphics binaries
-PRODUCT_COPY_FILES +=  vendor/linaro/hikey/mali/64bit/libGLES_mali.so:system/lib64/egl/libGLES_mali.so \
-                       vendor/linaro/hikey/mali/32bit/libGLES_mali.so:system/lib/egl/libGLES_mali.so
+# Include vendor binaries
+$(call inherit-product-if-exists, vendor/linaro/hikey/device-vendor.mk)
 
 # Include BT modules
 $(call inherit-product-if-exists, devices/linaro/hikey/wpan/ti-wpan-products.mk)
