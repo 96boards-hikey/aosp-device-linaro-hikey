@@ -1,0 +1,2 @@
+system/vendor/lib64/libGLES_mali.so:linaro
+system/vendor/lib32/libGLES_mali.so:linaro
