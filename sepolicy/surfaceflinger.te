@@ -1,3 +1,0 @@
-allow surfaceflinger self:process execmem;
-allow surfaceflinger debug_prop:property_service set;
-allow surfaceflinger ashmem_device:chr_file execute;

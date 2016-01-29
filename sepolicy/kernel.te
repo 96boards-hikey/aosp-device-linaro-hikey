@@ -1,1 +1,0 @@
-allow kernel shell_data_file:file { read write };

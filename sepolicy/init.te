@@ -1,7 +1,0 @@
-userdebug_or_eng(`
-    allow init su:process { transition dyntransition rlimitinh siginh };
-')
-allow init self:capability { sys_module };
-allow init self:tcp_socket create;
-allow init gatord:process { transition rlimitinh siginh };
-allow init kernel:system module_request;

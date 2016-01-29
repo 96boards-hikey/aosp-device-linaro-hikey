@@ -1,3 +1,0 @@
-type gatord, domain, mlstrustedsubject;
-
-permissive gatord;
