@@ -67,8 +67,9 @@ PRODUCT_COPY_FILES += system/core/rootdir/init.zygote64_32.rc:root/init.zygote64
 
 PRODUCT_PACKAGES += libGLES_android
 
-PRODUCT_PACKAGES += TIInit_11.8.32.bts \
-                    wl18xx-fw-4.bin
+PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
+			wl18xx-fw-4.bin \
+			wl18xx-conf.bin
 
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
