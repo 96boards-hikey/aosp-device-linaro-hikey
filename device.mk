@@ -53,7 +53,7 @@ PRODUCT_PACKAGES += UsbSpeedSwitch
 # Build libion
 PRODUCT_PACKAGES += libion
 
-# Build gralloc for hikey 
+# Build gralloc for hikey
 PRODUCT_PACKAGES += gralloc.hikey
 
 # Set zygote config
@@ -61,6 +61,9 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.zygote=zygote64_32
 PRODUCT_COPY_FILES += system/core/rootdir/init.zygote64_32.rc:root/init.zygote64_32.rc
 
 PRODUCT_PACKAGES += libGLES_android
+
+PRODUCT_PACKAGES += TIInit_11.8.32.bts \
+                    wl18xx-fw-4.bin
 
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
@@ -80,9 +83,6 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
         frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
         frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-        device/linaro/hikey/bt-wifi-firmware-util/TIInit_11.8.32.bts:system/etc/firmware/ti-connectivity/TIInit_11.8.32.bts \
-        device/linaro/hikey/bt-wifi-firmware-util/TIInit_11.8.32.bts:system/etc/firmware/TIInit_11.8.32.bts \
-        device/linaro/hikey/bt-wifi-firmware-util/wl18xx-fw-4.bin:system/etc/firmware/ti-connectivity/wl18xx-fw-4.bin \
         device/linaro/hikey/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
         device/linaro/hikey/android_dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
         device/linaro/hikey/audio/audio_policy.conf:system/etc/audio_policy.conf
