@@ -14,6 +14,6 @@
 
 # Linaro blob(s) necessary for Hikey hardware
 PRODUCT_COPY_FILES := \
-    vendor/linaro/hikey/proprietary/lib64/libGLES_mali.so:system/lib64/egl/libGLES_mali.so:linaro \
-    vendor/linaro/hikey/proprietary/libGLES_mali.so:system/lib/egl/libGLES_mali.so:linaro \
+    vendor/linaro/hikey/proprietary/lib64/libGLES_mali.so:system/vendor/lib64/egl/libGLES_mali.so:linaro \
+    vendor/linaro/hikey/proprietary/libGLES_mali.so:system/vendor/lib/egl/libGLES_mali.so:linaro \
 
