@@ -1,10 +1,15 @@
 Running Android on hikey board:
 
-# TODO
-* Download HDMI binaries:
-
 * Compiling userspace:
+Pull AOSP source:
 $ repo init -u https://android.googlesource.com/platform/manifest -b master & repo sync -j24
+
+Download and extract HDMI binaries:
+$ wget https://dl.google.com/dl/android/aosp/linaro-hikey-20160226-67c37b1a.tgz
+$ tar xzf linaro-hikey-20160226-67c37b1a.tgz
+$ ./extract-linaro-hikey.sh
+
+Build:
 $ . ./build/envsetup.sh
 $ lunch hikey-userdebug
 $ make -j32
