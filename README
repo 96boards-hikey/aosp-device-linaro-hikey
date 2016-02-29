@@ -9,6 +9,9 @@ $ wget https://dl.google.com/dl/android/aosp/linaro-hikey-20160226-67c37b1a.tgz
 $ tar xzf linaro-hikey-20160226-67c37b1a.tgz
 $ ./extract-linaro-hikey.sh
 
+Install mcopy utility:
+$ apt-get install mtools
+
 Build:
 $ . ./build/envsetup.sh
 $ lunch hikey-userdebug
