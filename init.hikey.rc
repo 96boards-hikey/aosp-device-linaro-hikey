@@ -108,17 +108,3 @@ service wpa_supplicant /system/bin/wpa_supplicant \
      disabled
      oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -dABKL
-     group dhcp
-     disabled
-     oneshot
-
-service dhcpcd_eth0 /system/bin/dhcpcd -dABKL
-     group dhcp
-     disabled
-     oneshot
-
-service dhcpcd_bt-pan /system/bin/dhcpcd -dABKL
-     group dhcp
-     disabled
-     oneshot
