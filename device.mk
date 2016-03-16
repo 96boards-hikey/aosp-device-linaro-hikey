@@ -39,7 +39,12 @@ $(call inherit-product-if-exists, device/linaro/hikey-kernel/modules/wifi/wifi.m
 DEVICE_PACKAGE_OVERLAYS := device/linaro/hikey/overlay
 
 # Add openssh support for remote debugging and job submission
-PRODUCT_PACKAGES += ssh sftp scp sshd ssh-keygen sshd_config start-ssh uim wpa_supplicant
+PRODUCT_PACKAGES += ssh sftp scp sshd ssh-keygen sshd_config start-ssh uim
+
+# Add wifi-related packages
+PRODUCT_PACKAGES += libwpa_client wpa_supplicant
+PRODUCT_PROPERTY_OVERRIDES += wifi.interface=wlan0 \
+                              wifi.supplicant_scan_interval=15
 
 # Build and run only ART
 PRODUCT_RUNTIMES := runtime_libart_default
