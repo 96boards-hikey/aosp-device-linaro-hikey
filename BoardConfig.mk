@@ -49,6 +49,9 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_USE_PAN_DISPLAY := true
 
+# enable to use the CPUSETS feature
+ENABLE_CPUSETS := true
+
 BOARD_SEPOLICY_DIRS := device/linaro/hikey/sepolicy
 
 ifeq ($(HOST_OS), linux)

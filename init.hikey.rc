@@ -61,6 +61,25 @@ on post-fs
 # https://bugs.launchpad.net/bugs/1037611
     chmod 0660 /dev/cpuctl
 
+    # update cpuset now that processors are up
+    # Foreground should contain all cores
+    write /dev/cpuset/foreground/cpus 0-7
+
+    # Add foreground/boost cpuset, it is used for app launches,
+    # and maybe other high priority tasks in the future.
+    # It's to be set to whatever cores should be used
+    # for short term high-priority tasks.
+    write /dev/cpuset/foreground/boost/cpus 0-7
+
+    #background contains a small subset (generally one little core)
+    write /dev/cpuset/background/cpus 0
+
+    # add system-background cpuset, a new cpuset for system services
+    # that should not run on larger cores
+    # system-background is for system tasks that should only run on
+    # little cores, not on bigs to be used only by init
+    write /dev/cpuset/system-background/cpus 0-4
+
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
     setprop ro.com.google.locationfeatures 1
