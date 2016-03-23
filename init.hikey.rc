@@ -7,10 +7,6 @@ on init
     # disable transparent huge pages
     write /sys/kernel/mm/transparent_hugepage/enabled "never"
 
-    # See storage config details at http://source.android.com/tech/storage/
-    symlink /sdcard /mnt/sdcard
-    symlink /sdcard /storage/sdcard0
-
     # Disabled virtual memory randomization
     # (if randomization is enabled the AEM-JIT will have a lower cache hit rate)
     write /proc/sys/kernel/randomize_va_space 0
@@ -31,6 +27,13 @@ on post-fs-data
     restorecon_recursive /data/local/tmp/lava
 
 on post-fs
+
+    # For legacy support
+    # See storage config details at http://source.android.com/tech/storage/
+    # since /storage is mounted on post-fs in init.rc
+    symlink /sdcard /mnt/sdcard
+    symlink /sdcard /storage/sdcard0
+
     # insert WiFi Modules
     insmod /system/modules/rfkill.ko
     insmod /system/modules/wifi/compat.ko
