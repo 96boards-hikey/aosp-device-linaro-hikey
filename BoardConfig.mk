@@ -56,3 +56,9 @@ ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := squashfs
 endif
 endif
+
+ifeq ($(TARGET_KERNEL_USE_4_1), true)
+TARGET_PREBUILT_KERNEL := device/linaro/hikey-kernel/Image-4.1
+TARGET_PREBUILT_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb-4.1
+TARGET_FSTAB := fstab.hikey-4.1
+endif
