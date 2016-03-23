@@ -11,11 +11,6 @@ on init
     # (if randomization is enabled the AEM-JIT will have a lower cache hit rate)
     write /proc/sys/kernel/randomize_va_space 0
 
-#bluetooth
-   #UART device
-   chmod 0660 /dev/ttyAMA1
-   chown bluetooth net_bt_stack /dev/ttyAMA1
-
 on fs
     mount_all /fstab.hikey
     setprop ro.crypto.fuse_sdcard false
@@ -48,8 +43,6 @@ on post-fs
 
     chmod 0666 /dev/ump
     chmod 0666 /dev/ion
-    chmod 0666 /dev/mali
-    chown system.graphics /dev/mali
     chmod 0666 /dev/graphics/fb0
 
 # fake some battery state
