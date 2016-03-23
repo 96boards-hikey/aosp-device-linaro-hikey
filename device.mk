@@ -20,14 +20,16 @@ $(call inherit-product-if-exists, frameworks/native/build/tablet-10in-xhdpi-2048
 ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_KERNEL := device/linaro/hikey-kernel/Image
 LOCAL_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb
+LOCAL_FSTAB := fstab.hikey
 else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 LOCAL_DTB := $(TARGET_PREBUILT_DTB)
+LOCAL_FSTAB := $(TARGET_FSTAB)
 endif
 
 PRODUCT_COPY_FILES +=   $(LOCAL_KERNEL):kernel \
                         $(LOCAL_DTB):hi6220-hikey.dtb \
-			$(LOCAL_PATH)/fstab.hikey:root/fstab.hikey \
+			$(LOCAL_PATH)/$(LOCAL_FSTAB):root/fstab.hikey \
 			$(LOCAL_PATH)/init.hikey.rc:root/init.hikey.rc \
 			$(LOCAL_PATH)/init.hikey.usb.rc:root/init.hikey.usb.rc \
 			$(LOCAL_PATH)/ueventd.hikey.rc:root/ueventd.hikey.rc \
