@@ -35,8 +35,6 @@ PRODUCT_COPY_FILES +=   $(LOCAL_KERNEL):kernel \
 			$(LOCAL_PATH)/ueventd.hikey.rc:root/ueventd.hikey.rc \
 			$(LOCAL_PATH)/hikey.kl:system/usr/keylayout/hikey.kl
 
-$(call inherit-product-if-exists, device/linaro/hikey-kernel/modules/wifi/wifi.mk)
-
 # Set custom settings
 DEVICE_PACKAGE_OVERLAYS := device/linaro/hikey/overlay
 
@@ -84,7 +82,7 @@ PRODUCT_COPY_FILES +=  \
 $(call inherit-product-if-exists, vendor/linaro/hikey/device-vendor.mk)
 
 # Include BT modules
-$(call inherit-product-if-exists, devices/linaro/hikey/wpan/ti-wpan-products.mk)
+$(call inherit-product-if-exists, device/linaro/hikey/wpan/ti-wpan-products.mk)
 
 PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
