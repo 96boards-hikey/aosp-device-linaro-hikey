@@ -26,7 +26,6 @@ on post-fs
     # For legacy support
     # See storage config details at http://source.android.com/tech/storage/
     # since /storage is mounted on post-fs in init.rc
-    symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
 
     # insert WiFi Modules
