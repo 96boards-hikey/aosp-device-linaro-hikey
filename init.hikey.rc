@@ -29,15 +29,6 @@ on post-fs
     symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
 
-    # insert WiFi Modules
-    insmod /system/modules/rfkill.ko
-    insmod /system/modules/wifi/compat.ko
-    insmod /system/modules/wifi/cfg80211.ko
-    insmod /system/modules/wifi/mac80211.ko
-    insmod /system/modules/wifi/wlcore.ko
-    insmod /system/modules/wifi/wl18xx.ko
-    insmod /system/modules/wifi/wlcore_sdio.ko
-
     # BT LED sysfs entry
     write /sys/devices/leds/leds/bt_active/trigger "hci1rx"
 
