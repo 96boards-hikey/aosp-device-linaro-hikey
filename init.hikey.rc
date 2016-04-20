@@ -108,6 +108,16 @@ service dhcpcd_eth0 /system/bin/dhcpcd -dABKL
      disabled
      oneshot
 
+service dhcpcd_usb0 /system/bin/dhcpcd -dABKL
+     group dhcp
+     disabled
+     oneshot
+
+service iprenew_usb0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
 service dhcpcd_bt-pan /system/bin/dhcpcd -dABKL
      group dhcp
      disabled
