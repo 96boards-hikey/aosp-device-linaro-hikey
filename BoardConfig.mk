@@ -30,7 +30,7 @@ BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_HOSTAPD_DRIVER := NL80211
 CONFIG_DRIVER_NL80211 := y
 
-BOARD_KERNEL_CMDLINE := k3v2mem hisi_dma_print=0 vmalloc=484M no_irq_affinity loglevel=7 androidboot.hardware=hikey selinux=0
+BOARD_KERNEL_CMDLINE := console=ttyFIQ0 androidboot.console=ttyFIQ0 androidboot.hardware=hikey firmware_class.path=/system/etc/firmware efi=noruntime androidboot.selinux=permissive
 
 TARGET_NO_BOOTLOADER := true
 TARGET_NO_KERNEL := false
