@@ -97,27 +97,27 @@ service wpa_supplicant /system/bin/wpa_supplicant \
      disabled
      oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -dABKL
+service dhcpcd_wlan0 /system/bin/dhcpcd -dABKL -f /system/etc/dhcpcd/dhcpcd.conf wlan0
      group dhcp
      disabled
      oneshot
 
-service dhcpcd_eth0 /system/bin/dhcpcd -dABKL
+service dhcpcd_eth0 /system/bin/dhcpcd -dABKL -f /system/etc/dhcpcd/dhcpcd.conf eth0
      group dhcp
      disabled
      oneshot
 
-service dhcpcd_usb0 /system/bin/dhcpcd -dABKL
+service dhcpcd_usb0 /system/bin/dhcpcd -dABKL -f /system/etc/dhcpcd/dhcpcd.conf usb0
      group dhcp
      disabled
      oneshot
 
-service iprenew_usb0 /system/bin/dhcpcd -n
+service iprenew_usb0 /system/bin/dhcpcd -n usb0
     class main
     disabled
     oneshot
 
-service dhcpcd_bt-pan /system/bin/dhcpcd -dABKL
+service dhcpcd_bt-pan /system/bin/dhcpcd -dABKL -f /system/etc/dhcpcd/dhcpcd.conf bt-pan0
      group dhcp
      disabled
      oneshot
