@@ -18,7 +18,7 @@
 $(call inherit-product-if-exists, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-heap.mk)
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/linaro/hikey-kernel/Image
+LOCAL_KERNEL := device/linaro/hikey-kernel/Image-dtb
 LOCAL_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb
 LOCAL_FSTAB := fstab.hikey
 else
