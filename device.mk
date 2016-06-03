@@ -49,8 +49,12 @@ PRODUCT_PROPERTY_OVERRIDES += wifi.interface=wlan0 \
 # Build and run only ART
 PRODUCT_RUNTIMES := runtime_libart_default
 
-# Build BT a2dp audio HAL
-PRODUCT_PACKAGES += audio.a2dp.default
+# Build HiKey HDMI, bluetooth a2dp and usb audio HALs
+PRODUCT_PACKAGES += audio.primary.hikey \
+		    audio.a2dp.default \
+		    audio.usb.default \
+		    audio.r_submix.default \
+		    tinyplay
 
 # Include USB speed switch App
 PRODUCT_PACKAGES += UsbSpeedSwitch
@@ -60,9 +64,6 @@ PRODUCT_PACKAGES += libion
 
 # Build gralloc for hikey
 PRODUCT_PACKAGES += gralloc.hikey
-
-# Build Audio Hal for hikey
-PRODUCT_PACKAGES += audio.primary.hikey
 
 # Set zygote config
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.zygote=zygote64_32
@@ -80,7 +81,8 @@ PRODUCT_COPY_FILES +=  \
         frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
         frameworks/native/data/etc/android.software.app_widgets.xml:system/etc/permissions/android.software.app_widgets.xml \
         frameworks/native/data/etc/android.software.backup.xml:system/etc/permissions/android.software.backup.xml \
-        frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
+        frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+        frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
 
 # Include vendor binaries
 $(call inherit-product-if-exists, vendor/linaro/hikey/device-vendor.mk)
