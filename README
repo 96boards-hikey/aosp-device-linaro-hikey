@@ -39,7 +39,7 @@ Remove jumper 5-6 and power the board
 * Building kernel
 $ git clone https://android.googlesource.com/kernel/hikey-linaro
 $ cd hikey-linaro
-$ git checkout -b android-hikey-linaro-4.1 origin/android-hikey-linaro-4.1
+$ git checkout -b android-hikey-linaro-4.4 origin/android-hikey-linaro-4.4
 $ make ARCH=arm64 hikey_defconfig
 $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- -j24
 Output: arch/arm64/boot/Image & arch/arm64/boot/dts/hisilicon/hi6220-hikey.dtb
