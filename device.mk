@@ -99,4 +99,7 @@ PRODUCT_COPY_FILES += \
         device/linaro/hikey/audio/audio_policy.conf:system/etc/audio_policy.conf
 
 # Copy media codecs config file
-PRODUCT_COPY_FILES += device/linaro/hikey/etc/media_codecs.xml:system/etc/media_codecs.xml
+PRODUCT_COPY_FILES += \
+        device/linaro/hikey/etc/media_codecs.xml:system/etc/media_codecs.xml \
+        frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml
+
