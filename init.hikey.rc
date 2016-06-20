@@ -87,7 +87,8 @@ on property:usb_speed.switch=full
 #userspace daemon needed for bluetooth
 service uim /system/bin/uim
     class main
-    user root
+    user bluetooth
+    group bluetooth net_bt_admin system net_bt_stack
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant \
