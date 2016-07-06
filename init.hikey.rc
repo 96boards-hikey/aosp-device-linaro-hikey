@@ -48,10 +48,6 @@ on post-fs
 # Set supported opengles version
     setprop ro.opengles.version 196608
 
-# change permissions for process groups
-# https://bugs.launchpad.net/bugs/1037611
-    chmod 0660 /dev/cpuctl
-
     # update cpuset now that processors are up
     # Foreground should contain all cores
     write /dev/cpuset/foreground/cpus 0-7
