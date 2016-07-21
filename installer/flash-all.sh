@@ -23,6 +23,12 @@ fi
 INSTALLER_DIR="`dirname ${0}`"
 FIRMWARE_DIR="${INSTALLER_DIR}"
 
+# for cases that not run "lunch hikey-userdebu"
+if [ -z "${ANDROID_BUILD_TOP}" ]; then
+    ANDROID_BUILD_TOP=${INSTALLER_DIR}/../../../../
+    ANDROID_PRODUCT_OUT="${ANDROID_BUILD_TOP}/out/target/product/hikey"
+fi
+
 if [ -z "${DIST_DIR}" ]; then
     DIST_DIR="${ANDROID_BUILD_TOP}"/out/dist
 fi
