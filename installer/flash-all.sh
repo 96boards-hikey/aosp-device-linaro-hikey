@@ -61,6 +61,8 @@ fi
 echo "android out dir:${OUT_IMGDIR}"
 
 sudo python "${INSTALLER_DIR}"/hisi-idt.py --img1="${FIRMWARE_DIR}"/l-loader.bin -d "${DEVICE_PORT}"
+# set a unique serial number
+fastboot oem serialno
 fastboot flash ptable "${INSTALLER_DIR}"/"${PTABLE}"
 fastboot flash fastboot "${FIRMWARE_DIR}"/fip.bin
 fastboot flash nvme "${INSTALLER_DIR}"/nvme.img
