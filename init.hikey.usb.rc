@@ -7,7 +7,7 @@ on boot
     write /config/usb_gadget/g1/bcdDevice 0x0223
     write /config/usb_gadget/g1/bcdUSB 0x0200
     mkdir /config/usb_gadget/g1/strings/0x409 0770
-    write /config/usb_gadget/g1/strings/0x409/serialnumber "0123456789"
+    write /config/usb_gadget/g1/strings/0x409/serialnumber ${ro.serialno}
     write /config/usb_gadget/g1/strings/0x409/manufacturer "HISILICON"
     write /config/usb_gadget/g1/strings/0x409/product "ADB Gadget"
     mkdir /config/usb_gadget/g1/functions/accessory.gs2
