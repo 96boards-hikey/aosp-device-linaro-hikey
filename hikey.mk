@@ -13,3 +13,4 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 # Overrides
 PRODUCT_NAME := hikey
 PRODUCT_DEVICE := hikey
+PRODUCT_BRAND := Android
