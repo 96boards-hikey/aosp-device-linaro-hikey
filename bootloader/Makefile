@@ -27,3 +27,7 @@ $(DIST_DIR)/l-loader.bin: $(DIST_DIR)/fip.bin
 	ln -sf $(EDK2_DIR)/Build/HiKey/RELEASE_GCC49/FV//bl1.bin && \
 	make CROSS_COMPILE=arm-linux-androideabi- l-loader.bin && \
 	mv l-loader.bin $(DIST_DIR)/
+
+clean:
+	rm -rf $(DIST_DIR)/fip.bin $(DIST_DIR)/l-loader.bin
+
