@@ -55,6 +55,11 @@ static bool low_power_mode = false;
 static char *max_cpu_freq = NORMAL_MAX_FREQ;
 static char *low_power_max_cpu_freq = LOW_POWER_MAX_FREQ;
 
+
+#define container_of(addr, struct_name, field_name) \
+    ((struct_name *)((char *)(addr) - offsetof(struct_name, field_name)))
+
+
 static void sysfs_write(const char *path, char *s)
 {
     char buf[80];
@@ -77,7 +82,7 @@ static void sysfs_write(const char *path, char *s)
 }
 
 /*[interactive cpufreq gov funcs]*********************************************/
-static void interactive_power_init(struct power_module __unused *module)
+static void interactive_power_init(struct hikey_power_module __unused *hikey)
 {
     int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
 
@@ -156,14 +161,16 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
 
 static void hikey_power_init(struct power_module __unused *module)
 {
-    interactive_power_init(module);
+    struct hikey_power_module *hikey = container_of(module,
+                                              struct hikey_power_module, base);
+    interactive_power_init(hikey);
 }
 
 static void hikey_power_hint(struct power_module *module, power_hint_t hint,
                                 void *data)
 {
-    struct hikey_power_module *hikey =
-            (struct hikey_power_module *) module;
+    struct hikey_power_module *hikey = container_of(module,
+                                              struct hikey_power_module, base);
 
     pthread_mutex_lock(&hikey->lock);
     switch (hint) {
@@ -191,8 +198,8 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
 
 static void set_feature(struct power_module *module, feature_t feature, int state)
 {
-    struct hikey_power_module *hikey =
-            (struct hikey_power_module *) module;
+    struct hikey_power_module *hikey = container_of(module,
+                                              struct hikey_power_module, base);
     switch (feature) {
     default:
         ALOGW("Error setting the feature, it doesn't exist %d\n", feature);
