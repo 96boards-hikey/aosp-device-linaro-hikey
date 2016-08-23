@@ -121,7 +121,7 @@ static void power_set_interactive(struct power_module __unused *module, int on)
     ALOGV("power_set_interactive: %d done\n", on);
 }
 
-static int boostpulse_open(struct hikey_power_module *hikey)
+static int interactive_boostpulse_open(struct hikey_power_module *hikey)
 {
     char buf[80];
     int len;
@@ -140,6 +140,22 @@ static int boostpulse_open(struct hikey_power_module *hikey)
     return hikey->boostpulse_fd;
 }
 
+static int interactive_boostpulse(struct hikey_power_module *hikey)
+{
+    char buf[80];
+    int len;
+
+    if (interactive_boostpulse_open(hikey) >= 0) {
+        len = write(hikey->boostpulse_fd, "1", 1);
+
+        if (len < 0) {
+            strerror_r(errno, buf, sizeof(buf));
+            ALOGE("Error writing to %s: %s\n", BOOSTPULSE_PATH, buf);
+        }
+    }
+    return 0;
+}
+
 static void set_feature(struct power_module *module, feature_t feature, int state)
 {
     struct hikey_power_module *hikey =
@@ -156,21 +172,11 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
 {
     struct hikey_power_module *hikey =
             (struct hikey_power_module *) module;
-    char buf[80];
-    int len;
 
     pthread_mutex_lock(&hikey->lock);
     switch (hint) {
      case POWER_HINT_INTERACTION:
-        if (boostpulse_open(hikey) >= 0) {
-            len = write(hikey->boostpulse_fd, "1", 1);
-
-            if (len < 0) {
-                strerror_r(errno, buf, sizeof(buf));
-                ALOGE("Error writing to %s: %s\n", BOOSTPULSE_PATH, buf);
-            }
-        }
-
+        interactive_boostpulse(hikey);
         break;
 
    case POWER_HINT_VSYNC:
