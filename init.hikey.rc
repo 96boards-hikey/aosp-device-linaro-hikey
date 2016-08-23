@@ -66,6 +66,15 @@ on post-fs
     # little cores, not on bigs to be used only by init
     write /dev/cpuset/system-background/cpus 0-4
 
+    #
+    # EAS stune boosting interfaces
+    #
+    chown system system /sys/fs/cgroup/stune/foreground/schedtune.boost
+    chown system system /sys/fs/cgroup/stune/schedtune.boost
+    write /sys/fs/cgroup/stune/foreground/schedtune.boost 10
+    write /sys/fs/cgroup/stune/schedtune.boost 0
+
+
 # enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
     setprop ro.com.google.locationfeatures 1
