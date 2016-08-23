@@ -76,20 +76,10 @@ static void sysfs_write(const char *path, char *s)
     close(fd);
 }
 
-static void calculate_max_cpu_freq() {
-    int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
-
-    if (is_svelte) {
-        char prop_buffer[PROPERTY_VALUE_MAX];
-        int len = property_get(SVELTE_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
-        max_cpu_freq = strndup(prop_buffer, len);
-        len = property_get(SVELTE_LOW_POWER_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
-        low_power_max_cpu_freq = strndup(prop_buffer, len);
-    }
-}
-
 static void power_init(struct power_module __unused *module)
 {
+    int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
+
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_rate",
                 "20000");
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_slack",
@@ -108,7 +98,14 @@ static void power_init(struct power_module __unused *module)
                 "1000000");
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/io_is_busy", "0");
 
-    calculate_max_cpu_freq();
+    if (is_svelte) {
+        char prop_buffer[PROPERTY_VALUE_MAX];
+        int len = property_get(SVELTE_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
+
+        max_cpu_freq = strndup(prop_buffer, len);
+        len = property_get(SVELTE_LOW_POWER_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
+        low_power_max_cpu_freq = strndup(prop_buffer, len);
+    }
 }
 
 static void power_set_interactive(struct power_module __unused *module, int on)
