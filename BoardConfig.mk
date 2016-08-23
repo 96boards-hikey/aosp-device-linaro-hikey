@@ -56,6 +56,10 @@ TARGET_USE_PAN_DISPLAY := true
 
 # enable to use the CPUSETS feature
 ENABLE_CPUSETS := true
+ENABLE_SCHEDBOOST := true
+# We may want to enable this later
+# but right now it doesn't build.
+#ENABLE_SCHED_BOOST := true
 
 BOARD_SEPOLICY_DIRS := device/linaro/hikey/sepolicy
 
