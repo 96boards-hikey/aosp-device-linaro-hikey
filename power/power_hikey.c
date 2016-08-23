@@ -34,9 +34,9 @@
 #include <hardware/hardware.h>
 #include <hardware/power.h>
 
-#define BOOSTPULSE_PATH "/sys/devices/system/cpu/cpufreq/interactive/boostpulse"
+#define INTERACTIVE_BOOSTPULSE_PATH "/sys/devices/system/cpu/cpufreq/interactive/boostpulse"
+#define INTERACTIVE_IO_IS_BUSY_PATH "/sys/devices/system/cpu/cpufreq/interactive/io_is_busy"
 #define CPU_MAX_FREQ_PATH "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
-#define IO_IS_BUSY_PATH "/sys/devices/system/cpu/cpufreq/interactive/io_is_busy"
 #define LOW_POWER_MAX_FREQ "729000"
 #define NORMAL_MAX_FREQ "1200000"
 #define SVELTE_PROP "ro.boot.svelte"
@@ -100,10 +100,12 @@ static void power_init(struct power_module __unused *module)
 
     if (is_svelte) {
         char prop_buffer[PROPERTY_VALUE_MAX];
-        int len = property_get(SVELTE_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
+        int len = property_get(SVELTE_MAX_FREQ_PROP, prop_buffer,
+                               LOW_POWER_MAX_FREQ);
 
         max_cpu_freq = strndup(prop_buffer, len);
-        len = property_get(SVELTE_LOW_POWER_MAX_FREQ_PROP, prop_buffer, LOW_POWER_MAX_FREQ);
+        len = property_get(SVELTE_LOW_POWER_MAX_FREQ_PROP, prop_buffer,
+                           LOW_POWER_MAX_FREQ);
         low_power_max_cpu_freq = strndup(prop_buffer, len);
     }
 }
@@ -117,7 +119,7 @@ static void power_set_interactive(struct power_module __unused *module, int on)
      */
     sysfs_write(CPU_MAX_FREQ_PATH,
                 (!on || low_power_mode) ? low_power_max_cpu_freq : max_cpu_freq);
-    sysfs_write(IO_IS_BUSY_PATH, on ? "1" : "0");
+    sysfs_write(INTERACTIVE_IO_IS_BUSY_PATH, on ? "1" : "0");
     ALOGV("power_set_interactive: %d done\n", on);
 }
 
@@ -127,12 +129,12 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
     int len;
 
    if (hikey->boostpulse_fd < 0)
-        hikey->boostpulse_fd = open(BOOSTPULSE_PATH, O_WRONLY);
+        hikey->boostpulse_fd = open(INTERACTIVE_BOOSTPULSE_PATH, O_WRONLY);
 
     if (hikey->boostpulse_fd < 0) {
         if (!hikey->boostpulse_warned) {
             strerror_r(errno, buf, sizeof(buf));
-            ALOGE("Error opening %s: %s\n", BOOSTPULSE_PATH,
+            ALOGE("Error opening %s: %s\n", INTERACTIVE_BOOSTPULSE_PATH,
                       buf);
             hikey->boostpulse_warned = 1;
         }
@@ -143,7 +145,7 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
     if (len < 0) {
         strerror_r(errno, buf, sizeof(buf));
         ALOGE("Error writing to %s: %s\n",
-                                 BOOSTPULSE_PATH, buf);
+                                 INTERACTIVE_BOOSTPULSE_PATH, buf);
         return -1;
     }
     return 0;
