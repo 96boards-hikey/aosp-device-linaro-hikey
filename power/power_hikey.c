@@ -25,6 +25,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <pthread.h>
+#include <semaphore.h>
 #include <cutils/properties.h>
 //#define LOG_NDEBUG 0
 
@@ -34,6 +36,10 @@
 #include <hardware/hardware.h>
 #include <hardware/power.h>
 
+#define SCHEDTUNE_BOOST_PATH "/sys/fs/cgroup/stune/foreground/schedtune.boost"
+#define SCHEDTUNE_BOOST_NORM "10"
+#define SCHEDTUNE_BOOST_INTERACTIVE "40"
+#define SCHEDTUNE_BOOST_TIME_NS 1000000000LL
 #define INTERACTIVE_BOOSTPULSE_PATH "/sys/devices/system/cpu/cpufreq/interactive/boostpulse"
 #define INTERACTIVE_IO_IS_BUSY_PATH "/sys/devices/system/cpu/cpufreq/interactive/io_is_busy"
 #define CPU_MAX_FREQ_PATH "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
@@ -46,8 +52,13 @@
 struct hikey_power_module {
     struct power_module base;
     pthread_mutex_t lock;
+    /* interactive gov boost values */
     int boostpulse_fd;
     int boostpulse_warned;
+    /* EAS schedtune values */
+    int schedtune_boost_fd;
+    long long deboost_time;
+    sem_t signal_lock;
 };
 
 static bool low_power_mode = false;
@@ -79,6 +90,23 @@ static void sysfs_write(const char *path, char *s)
     }
 
     close(fd);
+}
+
+#define NSEC_PER_SEC 1000000000LL
+static long long gettime_ns(void)
+{
+    struct timespec ts;
+
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * NSEC_PER_SEC + ts.tv_nsec;
+}
+
+static void nanosleep_ns(long long ns)
+{
+    struct timespec ts;
+    ts.tv_sec = ns/NSEC_PER_SEC;
+    ts.tv_nsec = ns%NSEC_PER_SEC;
+    nanosleep(&ts, NULL);
 }
 
 /*[interactive cpufreq gov funcs]*********************************************/
@@ -157,13 +185,103 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
     return 0;
 }
 
-/*[generic functions]*********************************************************/
+/*[schedtune functions]*******************************************************/
 
+int schedtune_sysfs_boost(struct hikey_power_module *hikey, char* booststr)
+{
+    char buf[80];
+    int len;
+
+    if (hikey->schedtune_boost_fd < 0)
+        return hikey->schedtune_boost_fd;
+
+    len = write(hikey->schedtune_boost_fd, booststr, 2);
+    if (len < 0) {
+        strerror_r(errno, buf, sizeof(buf));
+        ALOGE("Error writing to %s: %s\n", SCHEDTUNE_BOOST_PATH, buf);
+    }
+    return len;
+}
+
+static void* schedtune_deboost_thread(void* arg)
+{
+    struct hikey_power_module *hikey = (struct hikey_power_module *)arg;
+
+    while(1) {
+        sem_wait(&hikey->signal_lock);
+        while(1) {
+            long long now, sleeptime = 0;
+
+            pthread_mutex_lock(&hikey->lock);
+            now = gettime_ns();
+            if (hikey->deboost_time > now) {
+                sleeptime = hikey->deboost_time - now;
+                pthread_mutex_unlock(&hikey->lock);
+                nanosleep_ns(sleeptime);
+                continue;
+            }
+
+            schedtune_sysfs_boost(hikey, SCHEDTUNE_BOOST_NORM);
+            hikey->deboost_time = 0;
+            pthread_mutex_unlock(&hikey->lock);
+            break;
+        }
+    }
+    return NULL;
+}
+
+static int schedtune_boost(struct hikey_power_module *hikey)
+{
+    long long now;
+
+    if (hikey->schedtune_boost_fd < 0)
+        return hikey->schedtune_boost_fd;
+
+    now = gettime_ns();
+    if (!hikey->deboost_time) {
+        schedtune_sysfs_boost(hikey, SCHEDTUNE_BOOST_INTERACTIVE);
+        sem_post(&hikey->signal_lock);
+    }
+    hikey->deboost_time = now + SCHEDTUNE_BOOST_TIME_NS;
+
+    return 0;
+}
+
+static void schedtune_power_init(struct hikey_power_module *hikey)
+{
+    char buf[50];
+    pthread_t tid;
+
+
+    hikey->deboost_time = 0;
+    sem_init(&hikey->signal_lock, 0, 1);
+
+    hikey->schedtune_boost_fd = open(SCHEDTUNE_BOOST_PATH, O_WRONLY);
+    if (hikey->schedtune_boost_fd < 0) {
+        strerror_r(errno, buf, sizeof(buf));
+        ALOGE("Error opening %s: %s\n", SCHEDTUNE_BOOST_PATH, buf);
+    }
+
+    pthread_create(&tid, NULL, schedtune_deboost_thread, hikey);
+}
+
+/*[generic functions]*********************************************************/
 static void hikey_power_init(struct power_module __unused *module)
 {
     struct hikey_power_module *hikey = container_of(module,
                                               struct hikey_power_module, base);
     interactive_power_init(hikey);
+    schedtune_power_init(hikey);
+}
+
+static void hikey_hint_interaction(struct hikey_power_module *mod)
+{
+    /* Try interactive cpufreq boosting first */
+    if(!interactive_boostpulse(mod))
+        return;
+    /* Then try EAS schedtune boosting */
+    if(!schedtune_boost(mod))
+        return;
 }
 
 static void hikey_power_hint(struct power_module *module, power_hint_t hint,
@@ -175,7 +293,7 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
     pthread_mutex_lock(&hikey->lock);
     switch (hint) {
      case POWER_HINT_INTERACTION:
-        interactive_boostpulse(hikey);
+        hikey_hint_interaction(hikey);
         break;
 
    case POWER_HINT_VSYNC:
