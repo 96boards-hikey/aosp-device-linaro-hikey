@@ -151,17 +151,6 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
     return 0;
 }
 
-static void set_feature(struct power_module *module, feature_t feature, int state)
-{
-    struct hikey_power_module *hikey =
-            (struct hikey_power_module *) module;
-    switch (feature) {
-    default:
-        ALOGW("Error setting the feature, it doesn't exist %d\n", feature);
-        break;
-    }
-}
-
 static void hikey_power_hint(struct power_module *module, power_hint_t hint,
                                 void *data)
 {
@@ -190,6 +179,17 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
             break;
     }
     pthread_mutex_unlock(&hikey->lock);
+}
+
+static void set_feature(struct power_module *module, feature_t feature, int state)
+{
+    struct hikey_power_module *hikey =
+            (struct hikey_power_module *) module;
+    switch (feature) {
+    default:
+        ALOGW("Error setting the feature, it doesn't exist %d\n", feature);
+        break;
+    }
 }
 
 static struct hw_module_methods_t power_module_methods = {
