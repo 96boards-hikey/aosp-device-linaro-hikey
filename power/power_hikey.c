@@ -76,7 +76,8 @@ static void sysfs_write(const char *path, char *s)
     close(fd);
 }
 
-static void power_init(struct power_module __unused *module)
+/*[interactive cpufreq gov funcs]*********************************************/
+static void interactive_power_init(struct power_module __unused *module)
 {
     int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
 
@@ -151,6 +152,13 @@ static int interactive_boostpulse(struct hikey_power_module *hikey)
     return 0;
 }
 
+/*[generic functions]*********************************************************/
+
+static void hikey_power_init(struct power_module __unused *module)
+{
+    interactive_power_init(module);
+}
+
 static void hikey_power_hint(struct power_module *module, power_hint_t hint,
                                 void *data)
 {
@@ -208,7 +216,7 @@ struct hikey_power_module HAL_MODULE_INFO_SYM = {
             methods: &power_module_methods,
         },
 
-        init: power_init,
+        init: hikey_power_init,
         setInteractive: power_set_interactive,
         powerHint: hikey_power_hint,
         setFeature: set_feature,
