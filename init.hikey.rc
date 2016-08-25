@@ -48,14 +48,11 @@ on post-fs
     setprop ro.opengles.version 196608
 
     # update cpuset now that processors are up
-    # Foreground should contain all cores
-    write /dev/cpuset/foreground/cpus 0-7
+    # Foreground should contain most cores (7 is reserved for top-app)
+    write /dev/cpuset/foreground/cpus 0-6
 
-    # Add foreground/boost cpuset, it is used for app launches,
-    # and maybe other high priority tasks in the future.
-    # It's to be set to whatever cores should be used
-    # for short term high-priority tasks.
-    write /dev/cpuset/foreground/boost/cpus 0-7
+    # top-app gets all cpus (including reserved #7)
+    write /dev/cpuset/top-app/cpus 0-7
 
     #background contains a small subset (generally one little core)
     write /dev/cpuset/background/cpus 0
@@ -64,7 +61,7 @@ on post-fs
     # that should not run on larger cores
     # system-background is for system tasks that should only run on
     # little cores, not on bigs to be used only by init
-    write /dev/cpuset/system-background/cpus 0-4
+    write /dev/cpuset/system-background/cpus 0-3
 
     #
     # EAS stune boosting interfaces
