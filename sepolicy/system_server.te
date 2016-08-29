@@ -4,3 +4,4 @@ allow system_server untrusted_app:file write;
 allow system_server platform_app:file write;
 allow system_server system_app:file write;
 allow system_server isolated_app:file write;
+allow system_server bluetooth:file write;
