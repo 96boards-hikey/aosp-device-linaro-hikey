@@ -1,2 +1,1 @@
-require board=Hisilicon HiKey
-
+require board=hikey
