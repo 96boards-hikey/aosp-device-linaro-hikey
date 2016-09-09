@@ -61,8 +61,16 @@ fi
 echo "android out dir:${OUT_IMGDIR}"
 
 sudo python "${INSTALLER_DIR}"/hisi-idt.py --img1="${FIRMWARE_DIR}"/l-loader.bin -d "${DEVICE_PORT}"
+sleep 3
 # set a unique serial number
-fastboot oem serialno
+serialno=`fastboot getvar serialno 2>&1 > /dev/null`
+if [ "${serialno:10:6}" == "(null)" ]; then
+    fastboot oem serialno
+else
+    if [ "${serialno:10:15}" == "0123456789abcde" ]; then
+        fastboot oem serialno
+    fi
+fi
 fastboot flash ptable "${INSTALLER_DIR}"/"${PTABLE}"
 fastboot flash fastboot "${FIRMWARE_DIR}"/fip.bin
 fastboot flash nvme "${INSTALLER_DIR}"/nvme.img
