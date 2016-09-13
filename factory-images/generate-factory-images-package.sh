@@ -14,10 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ANDROID_BUILD_TOP=.
+
 source $ANDROID_BUILD_TOP/device/common/clear-factory-images-variables.sh
-BUILD=eng.`whoami`
-DEVICE=hikey
-PRODUCT=hikey
-VERSION=linaro-`date +"%Y.%m.%d"`
 # HiKey unfortunately can't use the ./generate-factory-images-common.sh script
 source $ANDROID_BUILD_TOP/device/linaro/hikey/factory-images/generate-factory-images-hikey.sh

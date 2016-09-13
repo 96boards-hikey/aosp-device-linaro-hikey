@@ -13,11 +13,23 @@
 # limitations under the License.
 
 
+DEVICE_DIR=device/linaro/hikey/
+DEVICE=hikey
+PRODUCT=hikey
+
+BUILD=eng.`whoami`
+BUILDNAME=`ls ${ANDROID_BUILD_TOP}/${PRODUCT}-img-${BUILD}.zip 2> /dev/null`
+if [ $? -eq 0 ]; then
+  VERSION=linaro-`date +"%Y.%m.%d"`
+else
+  BUILDNAME=`ls ${ANDROID_BUILD_TOP}/${PRODUCT}-img-*.zip 2> /dev/null`
+  BUILD=`basename ${BUILDNAME} | cut -f3 -d'-' | cut -f1 -d'.'`
+  VERSION=$BUILD
+fi
+
 # Prepare the staging directory
 rm -rf tmp
 mkdir -p tmp/$PRODUCT-$VERSION
-
-DEVICE_DIR=device/linaro/hikey/
 
 # copy over flashing tool, and bootloader binaries
 cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/README tmp/$PRODUCT-$VERSION/
