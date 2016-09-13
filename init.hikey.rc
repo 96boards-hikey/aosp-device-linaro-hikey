@@ -67,8 +67,10 @@ on post-fs
     # EAS stune boosting interfaces
     #
     chown system system /dev/stune/foreground/schedtune.boost
+    chown system system /dev/stune/foreground/schedtune.prefer_idle
     chown system system /dev/stune/schedtune.boost
     write /dev/stune/foreground/schedtune.boost 10
+    write /dev/stune/foreground/schedtune.prefer_idle 1
     write /dev/stune/schedtune.boost 0
 
 
