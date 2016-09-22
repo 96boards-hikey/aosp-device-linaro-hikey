@@ -91,7 +91,7 @@ on property:usb_speed.switch=full
 service uim /system/bin/uim
     class main
     user bluetooth
-    group bluetooth net_bt_admin system net_bt_stack
+    group bluetooth net_bt_admin system
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant \
