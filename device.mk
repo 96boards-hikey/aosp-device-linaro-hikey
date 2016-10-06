@@ -42,7 +42,7 @@ DEVICE_PACKAGE_OVERLAYS := device/linaro/hikey/overlay
 PRODUCT_PACKAGES += ssh sftp scp sshd ssh-keygen sshd_config start-ssh uim
 
 # Add wifi-related packages
-PRODUCT_PACKAGES += libwpa_client wpa_supplicant hostapd wificond
+PRODUCT_PACKAGES += libwpa_client wpa_supplicant hostapd wificond wifilogd
 PRODUCT_PROPERTY_OVERRIDES += wifi.interface=wlan0 \
                               wifi.supplicant_scan_interval=15
 
