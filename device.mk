@@ -78,10 +78,6 @@ PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 # PowerHAL
 PRODUCT_PACKAGES += power.hikey
 
-# VibratorHAL
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl
-
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
         device/linaro/hikey/etc/permissions/android.hardware.screen.xml:system/etc/permissions/android.hardware.screen.xml \
