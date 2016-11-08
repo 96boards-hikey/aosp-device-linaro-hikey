@@ -26,7 +26,6 @@
 
 /* Paramaters to set the baud rate*/
 #define  FLOW_CTL	0x0001
-#define  BOTHER		0x00001000
 #define  ARM_NCCS	19
 
 #ifndef TCGETS2

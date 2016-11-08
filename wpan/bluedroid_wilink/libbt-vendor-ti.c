@@ -41,12 +41,13 @@ void hw_config_cback(HC_BT_HDR *p_evt_buf);
  * Returns          None
  *
  * *******************************************************************************/
-void hw_config_cback(HC_BT_HDR *p_evt_buf)
+void hw_config_cback(HC_BT_HDR * __unused p_evt_buf)
 {
     ALOGV("hw_config_cback");
 }
 
-int ti_init(const bt_vendor_callbacks_t* p_cb, unsigned char *local_bdaddr) {
+int ti_init(const bt_vendor_callbacks_t* p_cb, unsigned char * __unused local_bdaddr)
+{
     ALOGV("vendor Init");
 
     if (p_cb == NULL)
@@ -59,14 +60,18 @@ int ti_init(const bt_vendor_callbacks_t* p_cb, unsigned char *local_bdaddr) {
 
     return 0;
 }
-void ti_cleanup(void) {
+
+void ti_cleanup(void)
+{
     ALOGV("vendor cleanup");
 
     bt_vendor_cbacks = NULL;
 }
-int ti_op(bt_vendor_opcode_t opcode, void **param) {
+
+int ti_op(bt_vendor_opcode_t opcode, void *param)
+{
     int fd;
-    int *fd_array = (int (*)[]) param;
+    int *fd_array = (int *)param;
 
     ALOGV("vendor op - %d", opcode);
     switch(opcode)
@@ -99,6 +104,7 @@ int ti_op(bt_vendor_opcode_t opcode, void **param) {
 
     return 0;
 }
+
 const bt_vendor_interface_t BLUETOOTH_VENDOR_LIB_INTERFACE  = {
     .init = ti_init,
     .op = ti_op,
