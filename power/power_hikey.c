@@ -320,12 +320,13 @@ static void set_feature(struct power_module *module, feature_t feature, int stat
                                               struct hikey_power_module, base);
     switch (feature) {
     default:
-        ALOGW("Error setting the feature, it doesn't exist %d\n", feature);
+        ALOGW("Error setting the feature %d and state %d, it doesn't exist\n",
+              feature, state);
         break;
     }
 }
 
-static int power_open(const hw_module_t* module, const char* name,
+static int power_open(const hw_module_t* __unused module, const char* name,
                     hw_device_t** device)
 {
     int retval = 0; /* 0 is ok; -1 is error */
@@ -362,25 +363,24 @@ static struct hw_module_methods_t power_module_methods = {
 };
 
 struct hikey_power_module HAL_MODULE_INFO_SYM = {
-    base: {
-        common: {
-            tag: HARDWARE_MODULE_TAG,
-            module_api_version: POWER_MODULE_API_VERSION_0_2,
-            hal_api_version: HARDWARE_HAL_API_VERSION,
-            id: POWER_HARDWARE_MODULE_ID,
-            name: "HiKey Power HAL",
-            author: "The Android Open Source Project",
-            methods: &power_module_methods,
+    .base = {
+        .common = {
+            .tag = HARDWARE_MODULE_TAG,
+            .module_api_version = POWER_MODULE_API_VERSION_0_2,
+            .hal_api_version = HARDWARE_HAL_API_VERSION,
+            .id = POWER_HARDWARE_MODULE_ID,
+            .name = "HiKey Power HAL",
+            .author = "The Android Open Source Project",
+            .methods = &power_module_methods,
         },
 
-        init: hikey_power_init,
-        setInteractive: power_set_interactive,
-        powerHint: hikey_power_hint,
-        setFeature: set_feature,
+        .init = hikey_power_init,
+        .setInteractive = power_set_interactive,
+        .powerHint = hikey_power_hint,
+        .setFeature = set_feature,
     },
 
-    lock: PTHREAD_MUTEX_INITIALIZER,
-    boostpulse_fd: -1,
-    boostpulse_warned: 0,
+    .lock = PTHREAD_MUTEX_INITIALIZER,
+    .boostpulse_fd = -1,
+    .boostpulse_warned = 0,
 };
-
