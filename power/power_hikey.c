@@ -71,7 +71,7 @@ static char *low_power_max_cpu_freq = LOW_POWER_MAX_FREQ;
     ((struct_name *)((char *)(addr) - offsetof(struct_name, field_name)))
 
 
-static void sysfs_write(const char *path, char *s)
+static int sysfs_write(const char *path, char *s)
 {
     char buf[80];
     int len;
@@ -80,7 +80,7 @@ static void sysfs_write(const char *path, char *s)
     if (fd < 0) {
         strerror_r(errno, buf, sizeof(buf));
         ALOGE("Error opening %s: %s\n", path, buf);
-        return;
+        return fd;
     }
 
     len = write(fd, s, strlen(s));
@@ -90,6 +90,7 @@ static void sysfs_write(const char *path, char *s)
     }
 
     close(fd);
+    return len;
 }
 
 #define NSEC_PER_SEC 1000000000LL
@@ -114,8 +115,9 @@ static void interactive_power_init(struct hikey_power_module __unused *hikey)
 {
     int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
 
-    sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_rate",
-                "20000");
+    if (sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_rate",
+                "20000") < 0)
+        return;
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_slack",
                 "20000");
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/min_sample_time",
