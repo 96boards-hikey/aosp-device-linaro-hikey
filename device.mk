@@ -57,7 +57,10 @@ PRODUCT_PACKAGES += audio.primary.hikey \
 		    tinyplay
 
 PRODUCT_PACKAGES += \
-    android.hardware.audio.effect@2.0-impl
+    android.hardware.audio@2.0-impl \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.broadcastradio@1.0-impl \
+    android.hardware.soundtrigger@2.0-impl
 
 # Include USB speed switch App
 PRODUCT_PACKAGES += UsbSpeedSwitch
