@@ -60,6 +60,10 @@ PRODUCT_PACKAGES += android.hardware.power@1.0-impl
 PRODUCT_PACKAGES += \
     android.hardware.gnss@1.0-impl
 
+# Keymaster HAL
+PRODUCT_PACKAGES += \
+    android.hardware.keymaster@3.0-impl
+
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
         device/linaro/hikey/etc/permissions/android.hardware.screen.xml:system/etc/permissions/android.hardware.screen.xml \
