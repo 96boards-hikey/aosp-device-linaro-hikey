@@ -77,6 +77,7 @@ PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 
 # PowerHAL
 PRODUCT_PACKAGES += power.hikey
+PRODUCT_PACKAGES += android.hardware.power@1.0-impl
 
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
