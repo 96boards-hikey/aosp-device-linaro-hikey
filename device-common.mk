@@ -56,6 +56,10 @@ PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 # PowerHAL
 PRODUCT_PACKAGES += android.hardware.power@1.0-impl
 
+#GNSS HAL
+PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl
+
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
         device/linaro/hikey/etc/permissions/android.hardware.screen.xml:system/etc/permissions/android.hardware.screen.xml \
