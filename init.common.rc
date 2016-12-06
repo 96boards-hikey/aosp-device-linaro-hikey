@@ -1,4 +1,4 @@
-import init.hikey.usb.rc
+import init.${ro.hardware}.usb.rc
 
 on init
     # mount debugfs
@@ -12,7 +12,7 @@ on init
     write /proc/sys/kernel/randomize_va_space 0
 
 on fs
-    mount_all /fstab.hikey
+    mount_all /fstab.${ro.hardware}
     setprop ro.crypto.fuse_sdcard false
 
 on post-fs-data
