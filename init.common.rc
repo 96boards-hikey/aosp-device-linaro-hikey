@@ -15,12 +15,6 @@ on fs
     mount_all /fstab.${ro.hardware}
     setprop ro.crypto.fuse_sdcard false
 
-on post-fs-data
-    mkdir /data/media 0770 media_rw media_rw
-    mkdir /data/misc/gatord 0700 root root
-    # Set SELinux security contexts for files used by lava.
-    restorecon_recursive /data/local/tmp/lava
-
 on post-fs
 
     # For legacy support
@@ -47,22 +41,6 @@ on post-fs
 # Set supported opengles version
     setprop ro.opengles.version 196608
 
-    # update cpuset now that processors are up
-    # Foreground should contain most cores (7 is reserved for top-app)
-    write /dev/cpuset/foreground/cpus 0-6
-
-    # top-app gets all cpus (including reserved #7)
-    write /dev/cpuset/top-app/cpus 0-7
-
-    #background contains a small subset (generally one little core)
-    write /dev/cpuset/background/cpus 0
-
-    # add system-background cpuset, a new cpuset for system services
-    # that should not run on larger cores
-    # system-background is for system tasks that should only run on
-    # little cores, not on bigs to be used only by init
-    write /dev/cpuset/system-background/cpus 0-3
-
     #
     # EAS stune boosting interfaces
     #
@@ -85,6 +63,29 @@ on post-fs
 
 # enable test harness
     setprop ro.test_harness true
+
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/misc/gatord 0700 root root
+    # Set SELinux security contexts for files used by lava.
+    restorecon_recursive /data/local/tmp/lava
+
+on property:sys.boot_completed=1
+    # update cpuset now that processors are up
+    # Foreground should contain most cores (7 is reserved for top-app)
+    write /dev/cpuset/foreground/cpus 0-6
+
+    # top-app gets all cpus (including reserved #7)
+    write /dev/cpuset/top-app/cpus 0-7
+
+    #background contains a small subset (generally one little core)
+    write /dev/cpuset/background/cpus 0
+
+    # add system-background cpuset, a new cpuset for system services
+    # that should not run on larger cores
+    # system-background is for system tasks that should only run on
+    # little cores, not on bigs to be used only by init
+    write /dev/cpuset/system-background/cpus 0-3
 
 on property:usb_speed.switch=high
     write /sys/kernel/debug/f72c0000.usb/config "0"
