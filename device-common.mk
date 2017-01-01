@@ -43,6 +43,14 @@ PRODUCT_PACKAGES += \
     android.hardware.broadcastradio@1.0-impl \
     android.hardware.soundtrigger@2.0-impl
 
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl \
+
+ifeq ($(ENABLE_TREBLE), true)
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-service
+endif
+
 # Set zygote config
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.zygote=zygote64_32
 PRODUCT_COPY_FILES += system/core/rootdir/init.zygote64_32.rc:root/init.zygote64_32.rc
