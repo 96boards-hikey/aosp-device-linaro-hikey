@@ -32,13 +32,13 @@ rm -rf tmp
 mkdir -p tmp/$PRODUCT-$VERSION
 
 # copy over flashing tool, and bootloader binaries
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/README tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hisi-idt.py tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/l-loader.bin tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/ptable-aosp-8g.img tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/ptable-aosp-4g.img tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/fip.bin tmp/$PRODUCT-$VERSION/
-cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/nvme.img tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/README tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/hisi-idt.py tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/l-loader.bin tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/ptable-aosp-8g.img tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/ptable-aosp-4g.img tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/fip.bin tmp/$PRODUCT-$VERSION/
+cp $ANDROID_BUILD_TOP/$DEVICE_DIR/installer/hikey/nvme.img tmp/$PRODUCT-$VERSION/
 
 cp ${SRCPREFIX}$PRODUCT-img-$BUILD.zip tmp/$PRODUCT-$VERSION/image-$PRODUCT-$VERSION.zip
 
