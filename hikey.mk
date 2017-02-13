@@ -1,7 +1,12 @@
-ifeq ($(TARGET_KERNEL_USE_4_1), true)
-TARGET_PREBUILT_KERNEL := device/linaro/hikey-kernel/Image-dtb-4.1
-TARGET_PREBUILT_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb-4.1
-TARGET_FSTAB := fstab.hikey-4.1
+ifndef TARGET_KERNEL_USE
+TARGET_KERNEL_USE=4.4
+endif
+TARGET_PREBUILT_KERNEL := device/linaro/hikey-kernel/Image-dtb-$(TARGET_KERNEL_USE)
+TARGET_PREBUILT_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb-$(TARGET_KERNEL_USE)
+ifeq ($(TARGET_KERNEL_USE), 4.1)
+TARGET_FSTAB := fstab.hikey-$(TARGET_KERNEL_USE)
+else
+TARGET_FSTAB := fstab.hikey
 endif
 
 #
