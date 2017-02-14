@@ -46,7 +46,7 @@ ENABLE_SCHEDBOOST := true
 # but right now it doesn't build.
 #ENABLE_SCHED_BOOST := true
 
-BOARD_SEPOLICY_DIRS := device/linaro/hikey/sepolicy
+BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
 
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
