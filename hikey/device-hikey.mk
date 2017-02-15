@@ -14,19 +14,9 @@
 # limitations under the License.
 #
 
-ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/linaro/hikey-kernel/Image-dtb
-LOCAL_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb
-LOCAL_FSTAB := fstab.hikey
-else
-LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
-LOCAL_DTB := $(TARGET_PREBUILT_DTB)
-LOCAL_FSTAB := $(TARGET_FSTAB)
-endif
-
-PRODUCT_COPY_FILES +=   $(LOCAL_KERNEL):kernel \
-                        $(LOCAL_DTB):hi6220-hikey.dtb \
-			$(LOCAL_PATH)/$(LOCAL_FSTAB):root/fstab.hikey \
+PRODUCT_COPY_FILES +=   $(TARGET_PREBUILT_KERNEL):kernel \
+                        $(TARGET_PREBUILT_DTB):hi6220-hikey.dtb \
+			$(LOCAL_PATH)/$(TARGET_FSTAB):root/fstab.hikey \
 			device/linaro/hikey/init.common.rc:root/init.hikey.rc \
 			device/linaro/hikey/init.common.usb.rc:root/init.hikey.usb.rc \
 			device/linaro/hikey/ueventd.common.rc:root/ueventd.hikey.rc \
