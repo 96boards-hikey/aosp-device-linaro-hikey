@@ -24,7 +24,7 @@ $ make -j32 TARGET_USERDATAIMAGE_4GB=true
 Select special bootloader mode by linking J15 1-2 and 3-4 pins
 Connect USB to PC to get ttyUSB device (ex: ttyUSB1)
 Power the board
-$ cd device/linaro/hikey/installer
+$ cd device/linaro/hikey/installer/hikey
 $ ./flash-all.sh /dev/ttyUSB1 [4g]
 Remove link 3-4 and power the board
 
@@ -39,11 +39,12 @@ Remove jumper 5-6 and power the board
 * Building kernel
 $ git clone https://android.googlesource.com/kernel/hikey-linaro
 $ cd hikey-linaro
-$ git checkout -b android-hikey-linaro-4.4 origin/android-hikey-linaro-4.4
+$ git checkout -b android-hikey-linaro-4.9 origin/android-hikey-linaro-4.9
 $ make ARCH=arm64 hikey_defconfig
 $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-android- -j24
 Output: arch/arm64/boot/Image & arch/arm64/boot/dts/hisilicon/hi6220-hikey.dtb
-   copy Image-dtb and hi6220-hikey.dtb to hikey-kernel directory
+   copy Image-dtb and hi6220-hikey.dtb to hikey-kernel directory to files
+        Image-dtb-4.9 and hi6220-hikey.dtb-4.9
 
 * Setting monitor resolution
 Add to BOARD_KERNEL_CMDLINE in BoardConfig.mk or
