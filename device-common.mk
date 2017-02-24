@@ -89,6 +89,7 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
         frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
         frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
+        device/linaro/hikey/vintf.xml:vendor/manifest.xml \
         device/linaro/hikey/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
         device/linaro/hikey/audio/audio_policy.conf:system/etc/audio_policy.conf
 
