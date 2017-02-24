@@ -88,7 +88,7 @@ on property:usb_speed.switch=full
     write /sys/kernel/debug/f72c0000.usb/config "1"
 
 #userspace daemon needed for bluetooth
-service uim /system/bin/uim
+service uim /vendor/bin/uim
     class main
     user bluetooth
     group bluetooth net_bt_admin system
