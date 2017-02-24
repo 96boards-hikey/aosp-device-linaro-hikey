@@ -19,7 +19,6 @@ WITH_DEXPREOPT ?= true
 USE_OPENGL_RENDERER := true
 
 # BT configs
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/linaro/hikey/bluetooth
 BOARD_HAVE_BLUETOOTH := true
 
 # generic wifi
