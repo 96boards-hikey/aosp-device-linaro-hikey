@@ -16,44 +16,45 @@
 
 #pragma once
 
-#include <android/hardware/bluetooth/1.0/IBluetoothHci.h>
-
-#include <hidl/MQDescriptor.h>
+#include <hidl/HidlSupport.h>
 
 #include "async_fd_watcher.h"
-#include "h4_protocol.h"
+#include "hci_internals.h"
+#include "hci_protocol.h"
 
 namespace android {
 namespace hardware {
 namespace bluetooth {
-namespace V1_0 {
-namespace hikey {
+namespace hci {
 
-using ::android::hardware::Return;
-using ::android::hardware::hidl_vec;
-
-class BluetoothHci : public IBluetoothHci {
+class H4Protocol : public HciProtocol {
  public:
-  Return<void> initialize(
-      const ::android::sp<IBluetoothHciCallbacks>& cb) override;
-  Return<void> sendHciCommand(const hidl_vec<uint8_t>& packet) override;
-  Return<void> sendAclData(const hidl_vec<uint8_t>& packet) override;
-  Return<void> sendScoData(const hidl_vec<uint8_t>& packet) override;
-  Return<void> close() override;
+  H4Protocol(int fd, PacketReadCallback event_cb, PacketReadCallback acl_cb,
+             PacketReadCallback sco_cb)
+      : uart_fd_(fd),
+        event_cb_(event_cb),
+        acl_cb_(acl_cb),
+        sco_cb_(sco_cb),
+        hci_packetizer_([this]() { OnPacketReady(); }) {}
 
-  static void OnPacketReady();
+  size_t Send(uint8_t type, const uint8_t* data, size_t length);
+
+  void OnPacketReady();
+
+  void OnDataReady(int fd);
 
  private:
-  ::android::sp<IBluetoothHciCallbacks> event_cb_;
-  int hci_tty_fd_;
+  int uart_fd_;
 
-  async::AsyncFdWatcher fd_watcher_;
+  PacketReadCallback event_cb_;
+  PacketReadCallback acl_cb_;
+  PacketReadCallback sco_cb_;
 
-  hci::H4Protocol* hci_;
+  HciPacketType hci_packet_type_{HCI_PACKET_TYPE_UNKNOWN};
+  hci::HciPacketizer hci_packetizer_;
 };
 
-}  // namespace hikey
-}  // namespace V1_0
+}  // namespace hci
 }  // namespace bluetooth
 }  // namespace hardware
 }  // namespace android

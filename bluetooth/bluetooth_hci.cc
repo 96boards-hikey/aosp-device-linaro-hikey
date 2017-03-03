@@ -18,44 +18,11 @@
 
 #include "bluetooth_hci.h"
 
-#include <utils/Log.h>
-
 #include <android-base/logging.h>
-
-#include "hci_internals.h"
-
-namespace {
-
-using android::hardware::bluetooth::V1_0::hikey::BluetoothHci;
-using android::hardware::hidl_vec;
-
-BluetoothHci* g_bluetooth_hci = nullptr;
-
-size_t write_safely(int fd, const uint8_t* data, size_t length) {
-  size_t transmitted_length = 0;
-  while (length > 0) {
-    ssize_t ret =
-        TEMP_FAILURE_RETRY(write(fd, data + transmitted_length, length));
-
-    if (ret == -1) {
-      if (errno == EAGAIN) continue;
-      ALOGE("%s error writing to UART (%s)", __func__, strerror(errno));
-      break;
-
-    } else if (ret == 0) {
-      // Nothing written :(
-      ALOGE("%s zero bytes written - something went wrong...", __func__);
-      break;
-    }
-
-    transmitted_length += ret;
-    length -= ret;
-  }
-
-  return transmitted_length;
-}
-
-}  // namespace
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <utils/Log.h>
 
 namespace android {
 namespace hardware {
@@ -63,86 +30,85 @@ namespace bluetooth {
 namespace V1_0 {
 namespace hikey {
 
+using android::hardware::hidl_vec;
+
 Return<void> BluetoothHci::initialize(
     const ::android::sp<IBluetoothHciCallbacks>& cb) {
   ALOGI("BluetoothHci::initialize()");
 
-  CHECK(cb != nullptr);
-  event_cb_ = cb;
-
   hci_tty_fd_ = open("/dev/hci_tty", O_RDWR);
   if (hci_tty_fd_ < 0) {
-    ALOGE("%s: Can't open hci_tty", __func__);
-    event_cb_->initializationComplete(Status::INITIALIZATION_ERROR);
+    ALOGE("%s: Can't open hci_tty (%s)", __func__, strerror(errno));
+    cb->initializationComplete(Status::INITIALIZATION_ERROR);
+    return Void();
   }
 
-  CHECK(g_bluetooth_hci == nullptr) << __func__ << " is not reentrant";
-  g_bluetooth_hci = this;
+  event_cb_ = cb;
+
+  hci_ = new hci::H4Protocol(
+      hci_tty_fd_,
+      [cb](const hidl_vec<uint8_t>& packet) { cb->hciEventReceived(packet); },
+      [cb](const hidl_vec<uint8_t>& packet) { cb->aclDataReceived(packet); },
+      [cb](const hidl_vec<uint8_t>& packet) { cb->scoDataReceived(packet); });
+
+  // Use a socket pair to enforce the TI FIONREAD requirement.
+  int sockfd[2];
+  socketpair(AF_LOCAL, SOCK_STREAM, 0, sockfd);
+  int shim_fd = sockfd[0];
+  int for_hci = sockfd[1];
+
+  fd_watcher_.WatchFdForNonBlockingReads(hci_tty_fd_, [this, shim_fd](int fd) {
+    int tty_bytes = 0;
+    if (TEMP_FAILURE_RETRY(ioctl(fd, FIONREAD, &tty_bytes)))
+      ALOGE("%s:FIONREAD %s", __func__, strerror(errno));
+    ALOGV("%s:tty_bytes = %d", __func__, tty_bytes);
+
+    uint8_t* tmp_buffer = new uint8_t[tty_bytes];
+    size_t bytes_read = TEMP_FAILURE_RETRY(read(fd, tmp_buffer, tty_bytes));
+    CHECK(static_cast<int>(bytes_read) == tty_bytes);
+    size_t bytes_written =
+        TEMP_FAILURE_RETRY(write(shim_fd, tmp_buffer, tty_bytes));
+    CHECK(static_cast<int>(bytes_written) == tty_bytes);
+    delete[] tmp_buffer;
+  });
 
   fd_watcher_.WatchFdForNonBlockingReads(
-      hci_tty_fd_, [this](int fd) { hci_packetizer_.OnDataReadyHikey(fd); });
+      for_hci, [this](int fd) { hci_->OnDataReady(fd); });
 
-  event_cb_->initializationComplete(Status::SUCCESS);
+  cb->initializationComplete(Status::SUCCESS);
   return Void();
 }
 
 Return<void> BluetoothHci::close() {
-  ALOGW("BluetoothHci::close()");
-  ::close(hci_tty_fd_);
-  hci_tty_fd_ = -1;
-  g_bluetooth_hci = nullptr;
+  ALOGI("BluetoothHci::close()");
+
+  if (hci_tty_fd_ >= 0) {
+    fd_watcher_.StopWatchingFileDescriptors();
+    ::close(hci_tty_fd_);
+    hci_tty_fd_ = -1;
+  }
+
+  if (hci_ != nullptr) {
+    delete hci_;
+    hci_ = nullptr;
+  }
+
   return Void();
 }
 
 Return<void> BluetoothHci::sendHciCommand(const hidl_vec<uint8_t>& packet) {
-  uint8_t type = HCI_PACKET_TYPE_COMMAND;
-  int rv = write_safely(hci_tty_fd_, &type, sizeof(type));
-  if (rv == sizeof(type))
-    rv = write_safely(hci_tty_fd_, packet.data(), packet.size());
+  hci_->Send(HCI_PACKET_TYPE_COMMAND, packet.data(), packet.size());
   return Void();
 }
 
 Return<void> BluetoothHci::sendAclData(const hidl_vec<uint8_t>& packet) {
-  uint8_t type = HCI_PACKET_TYPE_ACL_DATA;
-  int rv = write_safely(hci_tty_fd_, &type, sizeof(type));
-  if (rv == sizeof(type))
-    rv = write_safely(hci_tty_fd_, packet.data(), packet.size());
+  hci_->Send(HCI_PACKET_TYPE_ACL_DATA, packet.data(), packet.size());
   return Void();
 }
 
 Return<void> BluetoothHci::sendScoData(const hidl_vec<uint8_t>& packet) {
-  uint8_t type = HCI_PACKET_TYPE_SCO_DATA;
-  int rv = write_safely(hci_tty_fd_, &type, sizeof(type));
-  if (rv == sizeof(type))
-    rv = write_safely(hci_tty_fd_, packet.data(), packet.size());
+  hci_->Send(HCI_PACKET_TYPE_SCO_DATA, packet.data(), packet.size());
   return Void();
-}
-
-BluetoothHci* BluetoothHci::get() { return g_bluetooth_hci; }
-
-void BluetoothHci::OnPacketReady() {
-  BluetoothHci::get()->HandleIncomingPacket();
-}
-
-void BluetoothHci::HandleIncomingPacket() {
-  HciPacketType hci_packet_type = hci_packetizer_.GetPacketType();
-  hidl_vec<uint8_t> hci_packet = hci_packetizer_.GetPacket();
-
-  switch (hci_packet_type) {
-    case HCI_PACKET_TYPE_EVENT:
-      event_cb_->hciEventReceived(hci_packet);
-      break;
-    case HCI_PACKET_TYPE_ACL_DATA:
-      event_cb_->aclDataReceived(hci_packet);
-      break;
-    case HCI_PACKET_TYPE_SCO_DATA:
-      event_cb_->scoDataReceived(hci_packet);
-      break;
-    default: {
-      bool hci_packet_type_corrupted = true;
-      CHECK(hci_packet_type_corrupted == false);
-    }
-  }
 }
 
 }  // namespace hikey
