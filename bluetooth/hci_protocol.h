@@ -16,44 +16,33 @@
 
 #pragma once
 
-#include <android/hardware/bluetooth/1.0/IBluetoothHci.h>
+#include <hidl/HidlSupport.h>
 
-#include <hidl/MQDescriptor.h>
-
-#include "async_fd_watcher.h"
-#include "h4_protocol.h"
+#include "hci_internals.h"
+#include "hci_packetizer.h"
 
 namespace android {
 namespace hardware {
 namespace bluetooth {
-namespace V1_0 {
-namespace hikey {
+namespace hci {
 
-using ::android::hardware::Return;
 using ::android::hardware::hidl_vec;
+using PacketReadCallback = std::function<void(const hidl_vec<uint8_t>&)>;
 
-class BluetoothHci : public IBluetoothHci {
+// Implementation of HCI protocol bits common to different transports
+class HciProtocol {
  public:
-  Return<void> initialize(
-      const ::android::sp<IBluetoothHciCallbacks>& cb) override;
-  Return<void> sendHciCommand(const hidl_vec<uint8_t>& packet) override;
-  Return<void> sendAclData(const hidl_vec<uint8_t>& packet) override;
-  Return<void> sendScoData(const hidl_vec<uint8_t>& packet) override;
-  Return<void> close() override;
+  HciProtocol() = default;
+  virtual ~HciProtocol(){};
 
-  static void OnPacketReady();
+  // Protocol-specific implementation of sending packets.
+  virtual size_t Send(uint8_t type, const uint8_t* data, size_t length) = 0;
 
- private:
-  ::android::sp<IBluetoothHciCallbacks> event_cb_;
-  int hci_tty_fd_;
-
-  async::AsyncFdWatcher fd_watcher_;
-
-  hci::H4Protocol* hci_;
+ protected:
+  static size_t WriteSafely(int fd, const uint8_t* data, size_t length);
 };
 
-}  // namespace hikey
-}  // namespace V1_0
+}  // namespace hci
 }  // namespace bluetooth
 }  // namespace hardware
 }  // namespace android
