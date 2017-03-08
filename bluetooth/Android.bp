@@ -18,8 +18,11 @@ cc_binary {
     proprietary: true,
     relative_install_path: "hw",
     srcs: [
+        "async_fd_watcher.cc",
         "bluetooth_hci.cc",
-        "hci_packetizer_hikey.cc",
+        "h4_protocol.cc",
+        "hci_packetizer.cc",
+        "hci_protocol.cc",
         "service.cc",
     ],
     shared_libs: [
@@ -32,10 +35,6 @@ cc_binary {
         "libhidltransport",
         "liblog",
         "libutils",
-    ],
-    static_libs: [
-        "android.hardware.bluetooth-async",
-        "android.hardware.bluetooth-hci",
     ],
     init_rc: ["android.hardware.bluetooth@1.0-service.hikey.rc"],
 }
