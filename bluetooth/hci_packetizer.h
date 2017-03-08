@@ -16,23 +16,38 @@
 
 #pragma once
 
-#include "hci_packetizer.h"
+#include <functional>
+
+#include <hidl/HidlSupport.h>
+
+#include "hci_internals.h"
 
 namespace android {
 namespace hardware {
 namespace bluetooth {
-namespace V1_0 {
-namespace hikey {
+namespace hci {
 
-class HciPacketizerHikey : public hci::HciPacketizer {
+using ::android::hardware::hidl_vec;
+using HciPacketReadyCallback = std::function<void(void)>;
+
+class HciPacketizer {
  public:
-  HciPacketizerHikey(hci::HciPacketReadyCallback packet_cb)
-      : HciPacketizer(packet_cb){};
-  void OnDataReadyHikey(int fd);
+  HciPacketizer(HciPacketReadyCallback packet_cb)
+      : packet_ready_cb_(packet_cb){};
+  void OnDataReady(int fd, HciPacketType packet_type);
+  const hidl_vec<uint8_t>& GetPacket() const;
+
+ protected:
+  enum State { HCI_PREAMBLE, HCI_PAYLOAD };
+  State state_{HCI_PREAMBLE};
+  uint8_t preamble_[HCI_PREAMBLE_SIZE_MAX];
+  hidl_vec<uint8_t> packet_;
+  size_t bytes_remaining_{0};
+  size_t bytes_read_{0};
+  HciPacketReadyCallback packet_ready_cb_;
 };
 
-}  // namespace hikey
-}  // namespace V1_0
+}  // namespace hci
 }  // namespace bluetooth
 }  // namespace hardware
 }  // namespace android
