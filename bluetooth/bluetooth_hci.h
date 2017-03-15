@@ -32,8 +32,20 @@ namespace hikey {
 using ::android::hardware::Return;
 using ::android::hardware::hidl_vec;
 
+struct BluetoothDeathRecipient : hidl_death_recipient {
+  BluetoothDeathRecipient(const sp<IBluetoothHci> hci) : mHci(hci) {}
+
+  virtual void serviceDied(
+      uint64_t /*cookie*/,
+      const wp<::android::hidl::base::V1_0::IBase>& /*who*/) {
+    mHci->close();
+  }
+  sp<IBluetoothHci> mHci;
+};
+
 class BluetoothHci : public IBluetoothHci {
  public:
+  BluetoothHci();
   Return<void> initialize(
       const ::android::sp<IBluetoothHciCallbacks>& cb) override;
   Return<void> sendHciCommand(const hidl_vec<uint8_t>& packet) override;
@@ -50,6 +62,8 @@ class BluetoothHci : public IBluetoothHci {
   async::AsyncFdWatcher fd_watcher_;
 
   hci::H4Protocol* hci_;
+
+  ::android::sp<BluetoothDeathRecipient> deathRecipient;
 };
 
 }  // namespace hikey
