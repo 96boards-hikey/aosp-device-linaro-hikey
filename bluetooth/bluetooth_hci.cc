@@ -32,6 +32,9 @@ namespace hikey {
 
 using android::hardware::hidl_vec;
 
+BluetoothHci::BluetoothHci()
+    : deathRecipient(new BluetoothDeathRecipient(this)) {}
+
 Return<void> BluetoothHci::initialize(
     const ::android::sp<IBluetoothHciCallbacks>& cb) {
   ALOGI("BluetoothHci::initialize()");
@@ -44,6 +47,7 @@ Return<void> BluetoothHci::initialize(
   }
 
   event_cb_ = cb;
+  event_cb_->linkToDeath(deathRecipient, 0);
 
   hci_ = new hci::H4Protocol(
       hci_tty_fd_,
@@ -87,6 +91,8 @@ Return<void> BluetoothHci::close() {
     ::close(hci_tty_fd_);
     hci_tty_fd_ = -1;
   }
+
+  event_cb_->unlinkToDeath(deathRecipient);
 
   if (hci_ != nullptr) {
     delete hci_;
