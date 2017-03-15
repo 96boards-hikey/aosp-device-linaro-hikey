@@ -36,7 +36,7 @@
 #include <hardware/hardware.h>
 #include <hardware/power.h>
 
-#define SCHEDTUNE_BOOST_PATH "/dev/stune/foreground/schedtune.boost"
+#define SCHEDTUNE_BOOST_PATH "/dev/stune/top-app/schedtune.boost"
 #define SCHEDTUNE_BOOST_NORM "10"
 #define SCHEDTUNE_BOOST_INTERACTIVE "40"
 #define SCHEDTUNE_BOOST_TIME_NS 1000000000LL
