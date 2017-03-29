@@ -19,6 +19,7 @@
 #include <android/hardware/bluetooth/1.0/IBluetoothHci.h>
 #include <hidl/HidlSupport.h>
 #include <hidl/HidlTransportSupport.h>
+#include <utils/Log.h>
 
 #include "bluetooth_hci.h"
 
@@ -31,6 +32,9 @@ using ::android::sp;
 int main(int /* argc */, char** /* argv */) {
   sp<IBluetoothHci> bluetooth = new BluetoothHci;
   configureRpcThreadpool(1, true);
-  bluetooth->registerAsService();
-  joinRpcThreadpool();
+  android::status_t status = bluetooth->registerAsService();
+  if (status == android::OK)
+    joinRpcThreadpool();
+  else
+    ALOGE("Could not register as a service!");
 }
