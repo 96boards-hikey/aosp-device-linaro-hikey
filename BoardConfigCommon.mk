@@ -46,6 +46,8 @@ ENABLE_SCHEDBOOST := true
 
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
 
+DEVICE_MANIFEST_FILE := device/linaro/hikey/manifest.xml
+
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := squashfs
