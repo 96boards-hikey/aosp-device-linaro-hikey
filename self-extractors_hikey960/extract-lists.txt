@@ -1,0 +1,20 @@
+  arm)
+    TO_EXTRACT="\
+            SYSTEM/lib/egl/libGLES_mali.so \
+            SYSTEM/lib64/egl/libGLES_mali.so \
+            "
+            ;;
+  hisilicon)
+    TO_EXTRACT="\
+            SYSTEM/lib/libhilog.so \
+            SYSTEM/lib64/libhilog.so \
+            SYSTEM/lib/libion.so \
+            SYSTEM/lib64/libion.so \
+            SYSTEM/lib/hw/gralloc.hikey960.so \
+            SYSTEM/lib64/hw/gralloc.hikey960.so \
+            SYSTEM/vendor/lib/hwcomposer.hikey960.so \
+            SYSTEM/vendor/lib64/hwcomposer.hikey960.so \
+            SYSTEM/vendor/lib/libhiion.so \
+            SYSTEM/vendor/lib64/libhiion.so \
+            "
+            ;;
