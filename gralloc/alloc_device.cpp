@@ -306,9 +306,10 @@ static int gralloc_alloc_framebuffer_locked(alloc_device_t *dev, size_t size, in
 		vaddr = (void *)((uintptr_t)vaddr + bufferSize);
 	}
 
+	int fbdev_fd = m->framebuffer->shallow_fbdev_fd;
 	// The entire framebuffer memory is already mapped, now create a buffer object for parts of this memory
 	private_handle_t *hnd = new private_handle_t(private_handle_t::PRIV_FLAGS_FRAMEBUFFER, usage, size, vaddr,
-	        0, dup(m->framebuffer->fd), (uintptr_t)vaddr - (uintptr_t) m->framebuffer->base);
+	        0, fbdev_fd, (uintptr_t)vaddr - (uintptr_t) m->framebuffer->base);
 #if GRALLOC_ARM_UMP_MODULE
 	hnd->ump_id = m->framebuffer->ump_id;
 
@@ -330,7 +331,7 @@ static int gralloc_alloc_framebuffer_locked(alloc_device_t *dev, size_t size, in
 #ifdef FBIOGET_DMABUF
 		struct fb_dmabuf_export fb_dma_buf;
 
-		if (ioctl(m->framebuffer->fd, FBIOGET_DMABUF, &fb_dma_buf) == 0)
+		if (ioctl(fbdev_fd, FBIOGET_DMABUF, &fb_dma_buf) == 0)
 		{
 			AINF("framebuffer accessed with dma buf (fd 0x%x)\n", (int)fb_dma_buf.fd);
 			hnd->share_fd = fb_dma_buf.fd;
@@ -518,7 +519,6 @@ static int alloc_device_free(alloc_device_t *dev, buffer_handle_t handle)
 		const size_t bufferSize = m->finfo.line_length * m->info.yres;
 		int index = ((uintptr_t)hnd->base - (uintptr_t)m->framebuffer->base) / bufferSize;
 		m->bufferMask &= ~(1 << index);
-		close(hnd->fd);
 
 #if GRALLOC_ARM_UMP_MODULE
 
