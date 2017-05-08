@@ -333,6 +333,12 @@ static int gralloc_alloc_framebuffer_locked(alloc_device_t *dev, size_t size, in
 
 #endif
 	}
+
+	// correct numFds/numInts when there is no dmabuf fd
+	if (hnd->share_fd < 0) {
+		hnd->numFds--;
+		hnd->numInts++;
+	}
 #endif
 
 	*pHandle = hnd;
