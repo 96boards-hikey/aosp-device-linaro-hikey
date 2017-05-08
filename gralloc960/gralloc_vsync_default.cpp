@@ -49,7 +49,7 @@ int gralloc_wait_for_vsync(framebuffer_device_t *dev)
 	{
 		int crtc = 0;
 		gralloc_mali_vsync_report(MALI_VSYNC_EVENT_BEGIN_WAIT);
-		if(ioctl(m->framebuffer->fd, FBIO_WAITFORVSYNC, &crtc) < 0) 
+		if(ioctl(m->framebuffer->shallow_fbdev_fd, FBIO_WAITFORVSYNC, &crtc) < 0) 
 		{
 			gralloc_mali_vsync_report(MALI_VSYNC_EVENT_END_WAIT);
 			return -errno;
