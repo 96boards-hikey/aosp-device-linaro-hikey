@@ -186,7 +186,7 @@ struct private_handle_t
 	int     offset;
 
 #if GRALLOC_ARM_DMA_BUF_MODULE
-	ion_user_handle_t ion_hnd;
+	ion_user_handle_t ion_hnd_UNUSED;
 #endif
 
 #if GRALLOC_ARM_DMA_BUF_MODULE
@@ -223,7 +223,7 @@ struct private_handle_t
 		offset(0)
 #if GRALLOC_ARM_DMA_BUF_MODULE
 		,
-		ion_hnd(ION_INVALID_HANDLE)
+		ion_hnd_UNUSED(ION_INVALID_HANDLE)
 #endif
 
 	{
@@ -255,7 +255,7 @@ struct private_handle_t
 #endif
 		shallow_fbdev_fd(0),
 		offset(0),
-		ion_hnd(ION_INVALID_HANDLE)
+		ion_hnd_UNUSED(ION_INVALID_HANDLE)
 
 	{
 		version = sizeof(native_handle);
@@ -290,7 +290,7 @@ struct private_handle_t
 		offset(fb_offset)
 #if GRALLOC_ARM_DMA_BUF_MODULE
 		,
-		ion_hnd(ION_INVALID_HANDLE)
+		ion_hnd_UNUSED(ION_INVALID_HANDLE)
 #endif
 
 	{
