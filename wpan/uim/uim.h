@@ -69,6 +69,10 @@
 #define BAUD_RATE_SYSFS "/sys/devices/platform/kim/baud_rate"
 #define FLOW_CTRL_SYSFS "/sys/devices/platform/kim/flow_cntrl"
 
+#define INSTALL_SYSFS_ENTRY_OLD "/sys/devices/kim/install"
+#define DEV_NAME_SYSFS_OLD "/sys/devices/kim/dev_name"
+#define BAUD_RATE_SYSFS_OLD "/sys/devices/kim/baud_rate"
+#define FLOW_CTRL_SYSFS_OLD "/sys/devices/kim/flow_cntrl"
 
 #define VERBOSE
 /*Debug logs*/
