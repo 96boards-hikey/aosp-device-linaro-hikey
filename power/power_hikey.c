@@ -37,9 +37,15 @@
 #include <hardware/power.h>
 
 #define SCHEDTUNE_BOOST_PATH "/dev/stune/top-app/schedtune.boost"
-#define SCHEDTUNE_BOOST_NORM "10"
-#define SCHEDTUNE_BOOST_INTERACTIVE "40"
-#define SCHEDTUNE_BOOST_TIME_NS 1000000000LL
+#define SCHEDTUNE_BOOST_VAL_PROP "ro.config.schetune.touchboost.value"
+#define SCHEDTUNE_BOOST_TIME_PROP "ro.config.schetune.touchboost.time_ns"
+
+#define SCHEDTUNE_BOOST_VAL_DEFAULT "40"
+
+char schedtune_boost_norm[PROPERTY_VALUE_MAX] = "10";
+char schedtune_boost_interactive[PROPERTY_VALUE_MAX] = SCHEDTUNE_BOOST_VAL_DEFAULT;
+long long schedtune_boost_time_ns = 1000000000LL;
+
 #define INTERACTIVE_BOOSTPULSE_PATH "/sys/devices/system/cpu/cpufreq/interactive/boostpulse"
 #define INTERACTIVE_IO_IS_BUSY_PATH "/sys/devices/system/cpu/cpufreq/interactive/io_is_busy"
 #define CPU_MAX_FREQ_PATH "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
@@ -197,7 +203,7 @@ int schedtune_sysfs_boost(struct hikey_power_module *hikey, char* booststr)
     if (hikey->schedtune_boost_fd < 0)
         return hikey->schedtune_boost_fd;
 
-    len = write(hikey->schedtune_boost_fd, booststr, 2);
+    len = write(hikey->schedtune_boost_fd, booststr, strlen(booststr));
     if (len < 0) {
         strerror_r(errno, buf, sizeof(buf));
         ALOGE("Error writing to %s: %s\n", SCHEDTUNE_BOOST_PATH, buf);
@@ -223,7 +229,7 @@ static void* schedtune_deboost_thread(void* arg)
                 continue;
             }
 
-            schedtune_sysfs_boost(hikey, SCHEDTUNE_BOOST_NORM);
+            schedtune_sysfs_boost(hikey, schedtune_boost_norm);
             hikey->deboost_time = 0;
             pthread_mutex_unlock(&hikey->lock);
             break;
@@ -241,10 +247,10 @@ static int schedtune_boost(struct hikey_power_module *hikey)
 
     now = gettime_ns();
     if (!hikey->deboost_time) {
-        schedtune_sysfs_boost(hikey, SCHEDTUNE_BOOST_INTERACTIVE);
+        schedtune_sysfs_boost(hikey, schedtune_boost_interactive);
         sem_post(&hikey->signal_lock);
     }
-    hikey->deboost_time = now + SCHEDTUNE_BOOST_TIME_NS;
+    hikey->deboost_time = now + schedtune_boost_time_ns;
 
     return 0;
 }
@@ -254,15 +260,33 @@ static void schedtune_power_init(struct hikey_power_module *hikey)
     char buf[50];
     pthread_t tid;
 
-
     hikey->deboost_time = 0;
     sem_init(&hikey->signal_lock, 0, 1);
 
-    hikey->schedtune_boost_fd = open(SCHEDTUNE_BOOST_PATH, O_WRONLY);
+    hikey->schedtune_boost_fd = open(SCHEDTUNE_BOOST_PATH, O_RDWR);
     if (hikey->schedtune_boost_fd < 0) {
         strerror_r(errno, buf, sizeof(buf));
         ALOGE("Error opening %s: %s\n", SCHEDTUNE_BOOST_PATH, buf);
+        return;
     }
+
+    schedtune_boost_time_ns = property_get_int64(SCHEDTUNE_BOOST_TIME_PROP,
+                                                 1000000000LL);
+    property_get(SCHEDTUNE_BOOST_VAL_PROP, schedtune_boost_interactive,
+                 SCHEDTUNE_BOOST_VAL_DEFAULT);
+
+    if (hikey->schedtune_boost_fd >= 0) {
+        size_t len = read(hikey->schedtune_boost_fd, schedtune_boost_norm,
+                          PROPERTY_VALUE_MAX);
+	if (len <= 0)
+            ALOGE("Error reading normal boost value\n");
+	else if (schedtune_boost_norm[len] == '\n')
+            schedtune_boost_norm[len] = '\0';
+
+    }
+
+    ALOGV("Starting with schedtune boost norm: %s touchboost: %s and boosttime: %lld\n",
+	  schedtune_boost_norm, schedtune_boost_interactive, schedtune_boost_time_ns);
 
     pthread_create(&tid, NULL, schedtune_deboost_thread, hikey);
 }
