@@ -53,6 +53,11 @@ PRODUCT_COPY_FILES += system/core/rootdir/init.zygote64_32.rc:root/init.zygote64
 
 PRODUCT_PACKAGES += libGLES_android
 
+# Graphics HAL
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.mapper@2.0-impl
+
 PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 			wl18xx-fw-4.bin \
 			wl18xx-conf.bin
@@ -84,7 +89,7 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
         frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
         frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-        device/linaro/hikey/manifest.xml:vendor/manifest.xml \
+        device/linaro/hikey/manifest.xml:system/vendor/manifest.xml \
         device/linaro/hikey/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
         device/linaro/hikey/audio/audio_policy.conf:system/etc/audio_policy.conf
 
