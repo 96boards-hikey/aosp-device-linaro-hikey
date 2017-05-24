@@ -48,12 +48,6 @@ long long schedtune_boost_time_ns = 1000000000LL;
 
 #define INTERACTIVE_BOOSTPULSE_PATH "/sys/devices/system/cpu/cpufreq/interactive/boostpulse"
 #define INTERACTIVE_IO_IS_BUSY_PATH "/sys/devices/system/cpu/cpufreq/interactive/io_is_busy"
-#define CPU_MAX_FREQ_PATH "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
-#define LOW_POWER_MAX_FREQ "729000"
-#define NORMAL_MAX_FREQ "1200000"
-#define SVELTE_PROP "ro.boot.svelte"
-#define SVELTE_MAX_FREQ_PROP "ro.config.svelte.max_cpu_freq"
-#define SVELTE_LOW_POWER_MAX_FREQ_PROP "ro.config.svelte.low_power_max_cpu_freq"
 
 struct hikey_power_module {
     struct power_module base;
@@ -67,10 +61,21 @@ struct hikey_power_module {
     sem_t signal_lock;
 };
 
+
 static bool low_power_mode = false;
 
-static char *max_cpu_freq = NORMAL_MAX_FREQ;
-static char *low_power_max_cpu_freq = LOW_POWER_MAX_FREQ;
+
+#define CPUFREQ_CLUST_MAX_FREQ_PATH_PROP "ro.config.cpufreq.max_freq.cluster"
+#define CPUFREQ_CLUST_LOW_POWER_MAX_FREQ_PROP "ro.config.cpufreq.low_power_max.cluster"
+#define CPUFREQ_CLUST0_MAX_FREQ_PATH_DEFAULT "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
+
+#define NR_CLUSTERS 4
+static int max_clusters = 1;
+static struct hikey_cpufreq_t {
+	char path[PROPERTY_VALUE_MAX];
+	char normal_max[PROPERTY_VALUE_MAX];
+	char low_power_max[PROPERTY_VALUE_MAX];
+} hikey_cpufreq_clusters[NR_CLUSTERS];
 
 
 #define container_of(addr, struct_name, field_name) \
@@ -99,6 +104,25 @@ static int sysfs_write(const char *path, char *s)
     return len;
 }
 
+static int sysfs_read(const char *path, char *s, int slen)
+{
+    int len;
+    int fd = open(path, O_RDONLY);
+
+    if (fd < 0) {
+        ALOGE("Error opening %s\n", path);
+        return fd;
+    }
+
+    len = read(fd, s, slen);
+    if (len < 0) {
+        ALOGE("Error reading %s\n", path);
+    }
+
+    close(fd);
+    return len;
+}
+
 #define NSEC_PER_SEC 1000000000LL
 static long long gettime_ns(void)
 {
@@ -119,8 +143,6 @@ static void nanosleep_ns(long long ns)
 /*[interactive cpufreq gov funcs]*********************************************/
 static void interactive_power_init(struct hikey_power_module __unused *hikey)
 {
-    int32_t is_svelte = property_get_int32(SVELTE_PROP, 0);
-
     if (sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/timer_rate",
                 "20000") < 0)
         return;
@@ -140,29 +162,6 @@ static void interactive_power_init(struct hikey_power_module __unused *hikey)
                 "1000000");
     sysfs_write("/sys/devices/system/cpu/cpufreq/interactive/io_is_busy", "0");
 
-    if (is_svelte) {
-        char prop_buffer[PROPERTY_VALUE_MAX];
-        int len = property_get(SVELTE_MAX_FREQ_PROP, prop_buffer,
-                               LOW_POWER_MAX_FREQ);
-
-        max_cpu_freq = strndup(prop_buffer, len);
-        len = property_get(SVELTE_LOW_POWER_MAX_FREQ_PROP, prop_buffer,
-                           LOW_POWER_MAX_FREQ);
-        low_power_max_cpu_freq = strndup(prop_buffer, len);
-    }
-}
-
-static void power_set_interactive(struct power_module __unused *module, int on)
-{
-    ALOGV("power_set_interactive: %d\n", on);
-
-    /*
-     * Lower maximum frequency when screen is off.
-     */
-    sysfs_write(CPU_MAX_FREQ_PATH,
-                (!on || low_power_mode) ? low_power_max_cpu_freq : max_cpu_freq);
-    sysfs_write(INTERACTIVE_IO_IS_BUSY_PATH, on ? "1" : "0");
-    ALOGV("power_set_interactive: %d done\n", on);
 }
 
 static int interactive_boostpulse(struct hikey_power_module *hikey)
@@ -292,10 +291,61 @@ static void schedtune_power_init(struct hikey_power_module *hikey)
 }
 
 /*[generic functions]*********************************************************/
+
+static void hikey_cpufreq_set_interactive(struct power_module __unused *module, int on)
+{
+    int i;
+
+    /*
+     * Lower maximum frequency when screen is off.
+     */
+    for (i=0; i < max_clusters; i++) {
+        if ((!on || low_power_mode) && hikey_cpufreq_clusters[i].low_power_max[0] != '\0')
+		sysfs_write(hikey_cpufreq_clusters[i].path, hikey_cpufreq_clusters[i].low_power_max);
+	else
+		sysfs_write(hikey_cpufreq_clusters[i].path, hikey_cpufreq_clusters[i].normal_max);
+    }
+    sysfs_write(INTERACTIVE_IO_IS_BUSY_PATH, on ? "1" : "0");
+}
+
+
+static void hikey_cpufreq_init(struct hikey_power_module *hikey)
+{
+    char buf[128];
+    int len, i;
+
+    for (i=0; i < NR_CLUSTERS; i++) {
+        sprintf(buf,"%s%d", CPUFREQ_CLUST_MAX_FREQ_PATH_PROP, i);
+        property_get(buf, hikey_cpufreq_clusters[i].path, "");
+
+        if (hikey_cpufreq_clusters[i].path[0] == '\0') {
+            if (i == 0) {
+                /* In case no property was set, pick cpu0's cluster */
+                strncpy(hikey_cpufreq_clusters[i].path,
+                        CPUFREQ_CLUST0_MAX_FREQ_PATH_DEFAULT,
+                        PROPERTY_VALUE_MAX);
+            } else
+                break;
+        }
+        sprintf(buf,"%s%d", CPUFREQ_CLUST_LOW_POWER_MAX_FREQ_PROP, i);
+        property_get(buf, hikey_cpufreq_clusters[i].low_power_max, "");
+        len = sysfs_read(hikey_cpufreq_clusters[i].path,
+                         hikey_cpufreq_clusters[i].normal_max,
+                         PROPERTY_VALUE_MAX);
+        ALOGV("Cluster: %d path: %s  low: %s norm: %s\n", i,
+              hikey_cpufreq_clusters[i].path,
+              hikey_cpufreq_clusters[i].low_power_max,
+              hikey_cpufreq_clusters[i].normal_max);
+    }
+    max_clusters = i;
+}
+
+
 static void hikey_power_init(struct power_module __unused *module)
 {
     struct hikey_power_module *hikey = container_of(module,
                                               struct hikey_power_module, base);
+    hikey_cpufreq_init(hikey);
     interactive_power_init(hikey);
     schedtune_power_init(hikey);
 }
@@ -326,12 +376,8 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
         break;
 
     case POWER_HINT_LOW_POWER:
-        if (data) {
-            sysfs_write(CPU_MAX_FREQ_PATH, low_power_max_cpu_freq);
-        } else {
-            sysfs_write(CPU_MAX_FREQ_PATH, max_cpu_freq);
-        }
         low_power_mode = data;
+        hikey_cpufreq_set_interactive(module, 1);
         break;
 
     default:
@@ -370,7 +416,7 @@ static int power_open(const hw_module_t* __unused module, const char* name,
 
             dev->init = hikey_power_init;
             dev->powerHint = hikey_power_hint;
-            dev->setInteractive = power_set_interactive;
+            dev->setInteractive = hikey_cpufreq_set_interactive;
             dev->setFeature = set_feature;
 
             *device = (hw_device_t*)dev;
@@ -401,7 +447,7 @@ struct hikey_power_module HAL_MODULE_INFO_SYM = {
         },
 
         .init = hikey_power_init,
-        .setInteractive = power_set_interactive,
+        .setInteractive = hikey_cpufreq_set_interactive,
         .powerHint = hikey_power_hint,
         .setFeature = set_feature,
     },
