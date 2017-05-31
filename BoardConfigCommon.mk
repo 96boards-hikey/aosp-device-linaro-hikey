@@ -36,6 +36,7 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USE_PAN_DISPLAY := true
 
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
+BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
