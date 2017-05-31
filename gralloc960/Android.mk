@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ifeq ($(TARGET_PRODUCT),hikey960)
 LOCAL_PATH := $(call my-dir)
 
 # Include platform specific makefiles
@@ -141,11 +142,8 @@ LOCAL_PRELINK_MODULE := false
 LOCAL_MODULE_RELATIVE_PATH := hw
 LOCAL_MODULE_PATH_32 := $(TARGET_OUT_VENDOR)/lib
 LOCAL_MODULE_PATH_64 := $(TARGET_OUT_VENDOR)/lib64
-ifeq ($(TARGET_BOARD_PLATFORM),)
-LOCAL_MODULE := gralloc.default
-else
-LOCAL_MODULE := gralloc.$(TARGET_BOARD_PLATFORM)
-endif
+
+LOCAL_MODULE := gralloc.hikey960
 
 LOCAL_MODULE_TAGS := optional
 LOCAL_MULTILIB := both
@@ -163,3 +161,5 @@ LOCAL_SRC_FILES := \
 LOCAL_MODULE_OWNER := arm
 
 include $(BUILD_SHARED_LIBRARY)
+
+endif
