@@ -30,7 +30,7 @@ LOCAL_SRC_FILES := \
 	alloc_device.cpp \
 	framebuffer_device.cpp
 
-LOCAL_MODULE := gralloc.$(TARGET_BOARD_PLATFORM)
+LOCAL_MODULE := gralloc.hikey
 LOCAL_MODULE_RELATIVE_PATH := hw
 
 include $(BUILD_SHARED_LIBRARY)
