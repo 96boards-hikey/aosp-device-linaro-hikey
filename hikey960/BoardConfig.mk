@@ -1,5 +1,8 @@
 include device/linaro/hikey/BoardConfigCommon.mk
 
+TARGET_CPU_VARIANT := cortex-a73
+TARGET_2ND_CPU_VARIANT := cortex-a73
+
 TARGET_BOARD_PLATFORM := hikey960
 
 TARGET_NO_DTIMAGE := false
