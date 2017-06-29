@@ -8,5 +8,10 @@ $(PRODUCT_OUT)/dt.img: $(DTB)
 	$(MKDTIMG) -c -d $(DTB) -o $@
 
 droidcore: $(PRODUCT_OUT)/dt.img
+
+# Images will be packed into target_files zip, and hikey-img.zip.
+INSTALLED_RADIOIMAGE_TARGET += $(PRODUCT_OUT)/dt.img
+BOARD_PACK_RADIOIMAGES += dt.img
+
 endif
 endif
