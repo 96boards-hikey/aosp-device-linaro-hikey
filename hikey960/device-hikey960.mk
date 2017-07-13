@@ -22,7 +22,9 @@ PRODUCT_COPY_FILES +=	$(LOCAL_PATH)/fstab.hikey960:root/fstab.hikey960 \
 			device/linaro/hikey/init.hikey960.power.rc:root/init.hikey960.power.rc \
 			device/linaro/hikey/init.common.usb.rc:root/init.hikey960.usb.rc \
 			device/linaro/hikey/ueventd.common.rc:root/ueventd.hikey960.rc \
-			device/linaro/hikey/common.kl:system/usr/keylayout/hikey960.kl
+			device/linaro/hikey/common.kl:system/usr/keylayout/hikey960.kl \
+			frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml \
+			frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:system/etc/permissions/android.hardware.vulkan.version.xml
 
 # Build HiKey960 HDMI audio HAL. Experimental only may not work. FIXME
 PRODUCT_PACKAGES += audio.primary.hikey960
