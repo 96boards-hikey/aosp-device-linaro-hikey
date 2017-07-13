@@ -1,3 +1,5 @@
+HIKEY_USE_LEGACY_TI_BLUETOOTH := true
+
 #
 # Inherit the full_base and device configurations
 $(call inherit-product, device/linaro/hikey/hikey960/device-hikey960.mk)

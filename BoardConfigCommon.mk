@@ -37,6 +37,7 @@ TARGET_USE_PAN_DISPLAY := true
 SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
+BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
 DEVICE_MANIFEST_FILE := device/linaro/hikey/manifest.xml
 DEVICE_MATRIX_FILE := device/linaro/hikey/compatibility_matrix.xml
