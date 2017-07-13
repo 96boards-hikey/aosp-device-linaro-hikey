@@ -37,6 +37,7 @@ TARGET_USE_PAN_DISPLAY := true
 SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
+BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
