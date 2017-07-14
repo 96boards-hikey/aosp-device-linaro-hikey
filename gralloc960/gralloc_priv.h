@@ -209,7 +209,8 @@ struct private_handle_t
 #ifdef __cplusplus
 	/*
 	 * We track the number of integers in the structure. There are 16 unconditional
-	 * integers (magic - pid, yuv_info, fd and offset). Note that the fd element is
+	 * integers (magic - pid, yuv_info, shallow_fbdev_fd and offset).
+	 * Note that the shallow_fbdev_fd element is
 	 * considered an int not an fd because it is not intended to be used outside the
 	 * surface flinger process. The GRALLOC_ARM_NUM_INTS variable is used to track the
 	 * number of integers that are conditionally included. Similar considerations apply
