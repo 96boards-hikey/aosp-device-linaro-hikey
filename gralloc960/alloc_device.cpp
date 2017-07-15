@@ -117,7 +117,7 @@ static int gralloc_alloc_framebuffer_locked(alloc_device_t* dev, size_t size, in
 
 	// The entire framebuffer memory is already mapped, now create a buffer object for parts of this memory
 	private_handle_t* hnd = new private_handle_t(private_handle_t::PRIV_FLAGS_FRAMEBUFFER, usage, size,
-			(void*)framebufferVaddr, 0, dup(m->framebuffer->fd),
+			(void*)framebufferVaddr, 0, m->framebuffer->shallow_fbdev_fd,
 			(framebufferVaddr - (uintptr_t)m->framebuffer->base));
 
 	/*
@@ -1234,7 +1234,6 @@ static int alloc_device_free(alloc_device_t* dev, buffer_handle_t handle)
 		const size_t bufferSize = m->finfo.line_length * m->info.yres;
 		int index = ((uintptr_t)hnd->base - (uintptr_t)m->framebuffer->base) / bufferSize;
 		m->bufferMask &= ~(1 << index);
-		close(hnd->fd);
 	}
 
 	gralloc_buffer_attr_free( (private_handle_t *) hnd );
