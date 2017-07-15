@@ -307,7 +307,7 @@ int alloc_backend_alloc_framebuffer(private_module_t* m, private_handle_t* hnd)
 {
 	struct fb_dmabuf_export fb_dma_buf;
 	int res;
-	res = ioctl( m->framebuffer->fd, FBIOGET_DMABUF, &fb_dma_buf );
+	res = ioctl( m->framebuffer->shallow_fbdev_fd, FBIOGET_DMABUF, &fb_dma_buf );
 	if(res == 0)
 	{
 		hnd->share_fd = fb_dma_buf.fd;

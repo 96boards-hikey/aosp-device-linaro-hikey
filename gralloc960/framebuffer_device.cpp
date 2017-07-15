@@ -92,24 +92,25 @@ static int fb_post(struct framebuffer_device_t* dev, buffer_handle_t buffer)
 		m->info.activate = FB_ACTIVATE_VBL;
 		m->info.yoffset = offset / m->finfo.line_length;
 
+                int fbdev_fd = m->framebuffer->shallow_fbdev_fd;
 #ifdef STANDARD_LINUX_SCREEN
-		if (ioctl(m->framebuffer->fd, FBIOPAN_DISPLAY, &m->info) == -1) 
+		if (ioctl(fbdev_fd, FBIOPAN_DISPLAY, &m->info) == -1) 
 		{
-			AERR( "FBIOPAN_DISPLAY failed for fd: %d", m->framebuffer->fd );
+			AERR( "FBIOPAN_DISPLAY failed for fd: %d", fbdev_fd );
 			m->base.unlock(&m->base, buffer); 
 			return -errno;
 		}
 #else /*Standard Android way*/
-		if (ioctl(m->framebuffer->fd, FBIOPUT_VSCREENINFO, &m->info) == -1) 
+		if (ioctl(fbdev_fd, FBIOPUT_VSCREENINFO, &m->info) == -1) 
 		{
-			AERR( "FBIOPUT_VSCREENINFO failed for fd: %d", m->framebuffer->fd );
+			AERR( "FBIOPUT_VSCREENINFO failed for fd: %d", fbdev_fd );
 			m->base.unlock(&m->base, buffer); 
 			return -errno;
 		}
 #endif
 		if ( 0 != gralloc_wait_for_vsync(dev) )
 		{
-			AERR( "Gralloc wait for vsync failed for fd: %d", m->framebuffer->fd );
+			AERR( "Gralloc wait for vsync failed for fd: %d", fbdev_fd );
 			m->base.unlock(&m->base, buffer); 
 			return -errno;
 		}
@@ -365,7 +366,7 @@ int init_frame_buffer_locked(struct private_module_t* module)
 
 	// Create a "fake" buffer object for the entire frame buffer memory, and store it in the module
 	module->framebuffer = new private_handle_t(private_handle_t::PRIV_FLAGS_FRAMEBUFFER, GRALLOC_USAGE_HW_FB, fbSize, vaddr,
-	                                           0, dup(fd), 0);
+	                                           0, fd, 0);
 
 	module->numBuffers = info.yres_virtual / info.yres;
 	module->bufferMask = 0;
