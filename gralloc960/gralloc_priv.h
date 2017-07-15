@@ -194,7 +194,7 @@ struct private_handle_t
 	mali_gralloc_yuv_info yuv_info;
 
 	// Following members is for framebuffer only
-	int   fd;
+	int   shallow_fbdev_fd; // shallow copy, not dup'ed
 	union {
 		off_t    offset;
 		uint64_t padding4;
@@ -235,7 +235,7 @@ struct private_handle_t
 		pid(getpid()),
 		attr_base(MAP_FAILED),
 		yuv_info(MALI_YUV_NO_INFO),
-		fd(fb_file),
+		shallow_fbdev_fd(fb_file),
 		offset(fb_offset)
 	{
 		version = sizeof(native_handle);
