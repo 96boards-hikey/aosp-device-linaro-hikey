@@ -248,6 +248,13 @@ int alloc_backend_alloc(alloc_device_t* dev, size_t size, int usage, buffer_hand
 		return -1;
 	}
 
+        // we do not need ion_hnd once we have shared_fd
+        if (0 != ion_free(m->ion_client, ion_hnd))
+        {
+            AWAR("ion_free( %d ) failed", m->ion_client);
+        }
+        ion_hnd = -1;
+
 	if (!(usage & GRALLOC_USAGE_PROTECTED))
 	{
 		cpu_ptr = (unsigned char*)mmap( NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, shared_fd, 0 );
@@ -255,7 +262,6 @@ int alloc_backend_alloc(alloc_device_t* dev, size_t size, int usage, buffer_hand
 		if ( MAP_FAILED == cpu_ptr )
 		{
 			AERR( "ion_map( %d ) failed", m->ion_client );
-			if ( 0 != ion_free( m->ion_client, ion_hnd ) ) AERR( "ion_free( %d ) failed", m->ion_client );
 			close( shared_fd );
 			return -1;
 		}
@@ -280,7 +286,6 @@ int alloc_backend_alloc(alloc_device_t* dev, size_t size, int usage, buffer_hand
 	if ( NULL != hnd )
 	{
 		hnd->share_fd = shared_fd;
-		hnd->ion_hnd = ion_hnd;
 		hnd->min_pgsz = min_pgsz;
 		*pHandle = hnd;
 		return 0;
@@ -298,8 +303,6 @@ int alloc_backend_alloc(alloc_device_t* dev, size_t size, int usage, buffer_hand
 		if ( 0 != ret ) AERR( "munmap failed for base:%p size: %zd", cpu_ptr, size );
 	}
 
-	ret = ion_free( m->ion_client, ion_hnd );
-	if ( 0 != ret ) AERR( "ion_free( %d ) failed", m->ion_client );
 	return -1;
 }
 
@@ -322,6 +325,7 @@ int alloc_backend_alloc_framebuffer(private_module_t* m, private_handle_t* hnd)
 
 void alloc_backend_alloc_free(private_handle_t const* hnd, private_module_t* m)
 {
+	(void) m;
 	if (hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER)
 	{
 		return;
@@ -334,7 +338,6 @@ void alloc_backend_alloc_free(private_handle_t const* hnd, private_module_t* m)
 			if ( 0 != munmap( (void*)hnd->base, hnd->size ) ) AERR( "Failed to munmap handle %p", hnd );
 		}
 		close( hnd->share_fd );
-		if ( 0 != ion_free( m->ion_client, hnd->ion_hnd ) ) AERR( "Failed to ion_free( ion_client: %d ion_hnd: %d )", m->ion_client, hnd->ion_hnd );
 		memset( (void*)hnd, 0, sizeof( *hnd ) );
 	}
 }
