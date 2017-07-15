@@ -162,7 +162,7 @@ struct private_handle_t
 	int     share_fd;
 	int     share_attr_fd;
 
-	ion_user_handle_t ion_hnd;
+	ion_user_handle_t ion_hnd_UNUSED;
 
 	// ints
 	int        magic;
@@ -183,7 +183,7 @@ struct private_handle_t
 	};
 	int        lockState;
 	int        writeOwner;
-	int        pid;
+	int        pid_UNUSED;
 
 	// locally mapped shared attribute area
 	union {
@@ -221,7 +221,7 @@ struct private_handle_t
 	private_handle_t(int _flags, int _usage, int _size, void *_base, int lock_state, int fb_file, off_t fb_offset):
 		share_fd(-1),
 		share_attr_fd(-1),
-		ion_hnd(-1),
+		ion_hnd_UNUSED(-1),
 		magic(sMagic),
 		flags(_flags),
 		usage(_usage),
@@ -232,7 +232,7 @@ struct private_handle_t
 		base(_base),
 		lockState(lock_state),
 		writeOwner(0),
-		pid(getpid()),
+		pid_UNUSED(-1),
 		attr_base(MAP_FAILED),
 		yuv_info(MALI_YUV_NO_INFO),
 		shallow_fbdev_fd(fb_file),
