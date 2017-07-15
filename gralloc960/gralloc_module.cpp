@@ -66,18 +66,9 @@ static int gralloc_register_buffer(gralloc_module_t const* module, buffer_handle
 	// if this handle was created in this process, then we keep it as is.
 	private_handle_t* hnd = (private_handle_t*)handle;
 
-	if (hnd->pid == getpid())
-	{
-		// If the handle is created and registered in the same process this is valid,
-		// but it could also be that application is registering twice which is illegal.
-		AWAR("Registering handle %p coming from the same process: %d.", hnd, hnd->pid);
-	}
-
 	int retval = -EINVAL;
 
 	pthread_mutex_lock(&s_map_lock);
-
-	hnd->pid = getpid();
 
 	if (hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER) 
 	{
@@ -114,7 +105,7 @@ static int gralloc_unregister_buffer(gralloc_module_t const* module, buffer_hand
 	{
 		AERR( "Can't unregister buffer %p as it is a framebuffer", handle );
 	}
-	else if (hnd->pid == getpid()) // never unmap buffers that were not created in this process
+	else
 	{
 		pthread_mutex_lock(&s_map_lock);
 
@@ -141,10 +132,6 @@ static int gralloc_unregister_buffer(gralloc_module_t const* module, buffer_hand
 		hnd->writeOwner = 0;
 
 		pthread_mutex_unlock(&s_map_lock);
-	}
-	else
-	{
-		AERR( "Trying to unregister buffer %p from process %d that was not created in current process: %d", hnd, hnd->pid, getpid());
 	}
 
 	return 0;
