@@ -4,7 +4,7 @@ CFLAGS=-march=armv7-a
 LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
 BL1=bl1.bin
-PTABLE_LST:=aosp-4g aosp-8g linux-4g linux-8g
+PTABLE_LST:=aosp-4g aosp-8g linux-4g linux-8g swap-8g
 
 all: l-loader.bin ptable.img
 
