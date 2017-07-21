@@ -28,13 +28,13 @@ echo ${BK_PTABLE_LBA}
 # get the partition table
 case ${PTABLE} in
   tiny)
-    dd if=/dev/zero of=${TEMP_FILE} bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
+    dd if=/dev/zero of=${TEMP_FILE} conv=sparse bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
     sgdisk -U -R -v ${TEMP_FILE}
     sgdisk -n 1:2048:4095 -t 1:0700 -u 1:F9F21F01-A8D4-5F0E-9746-594869AEC3E4 -c 1:"vrl" -p ${TEMP_FILE}
     sgdisk -n 2:4096:6143 -t 2:0700 -u 2:F9F21F02-A8D4-5F04-9746-594869AEC3E4 -c 2:"vrl_backup" -p ${TEMP_FILE}
     ;;
   aosp*)
-    dd if=/dev/zero of=${TEMP_FILE} bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
+    dd if=/dev/zero of=${TEMP_FILE} conv=sparse bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
     sgdisk -U 2CB85345-6A91-4043-8203-723F0D28FBE8 -v ${TEMP_FILE}
     #[1: vrl: 1M-2M]
     sgdisk -n 1:0:+1M -t 1:0700 -u 1:496847AB-56A1-4CD5-A1AD-47F4ACF055C9 -c 1:"vrl" ${TEMP_FILE}
@@ -58,7 +58,7 @@ case ${PTABLE} in
     sgdisk -n -E -t 10:8300 -u 10:064111F6-463B-4CE1-876B-13F3684CE164 -c 10:"userdata" -p ${TEMP_FILE}
     ;;
   linux*)
-    dd if=/dev/zero of=${TEMP_FILE} bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
+    dd if=/dev/zero of=${TEMP_FILE} conv=sparse bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
     sgdisk -U 2CB85345-6A91-4043-8203-723F0D28FBE8 -v ${TEMP_FILE}
     #[1: vrl: 1M-2M]
     sgdisk -n 1:0:+1M -t 1:0700 -u 1:496847AB-56A1-4CD5-A1AD-47F4ACF055C9 -c 1:"vrl" ${TEMP_FILE}
@@ -80,7 +80,7 @@ case ${PTABLE} in
     sgdisk -n -E -t 9:8300 -u 9:FC56E345-2E8E-49AE-B2F8-5B9D263FE377 -c 9:"system" ${TEMP_FILE}
     ;;
   swap*)
-    dd if=/dev/zero of=${TEMP_FILE} bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
+    dd if=/dev/zero of=${TEMP_FILE} conv=sparse bs=${SECTOR_SIZE} count=${SECTOR_NUMBER}
     sgdisk -U 2CB85345-6A91-4043-8203-723F0D28FBE8 -v ${TEMP_FILE}
     #[1: vrl: 1M-2M]
     sgdisk -n 1:0:+1M -t 1:0700 -u 1:496847AB-56A1-4CD5-A1AD-47F4ACF055C9 -c 1:"vrl" ${TEMP_FILE}
@@ -106,7 +106,7 @@ case ${PTABLE} in
 esac
 
 # get the main and the backup parts of the partition table
-dd if=${TEMP_FILE} of=prm_ptable.img bs=${SECTOR_SIZE} count=34
-dd if=${TEMP_FILE} of=sec_ptable.img skip=${BK_PTABLE_LBA} bs=${SECTOR_SIZE} count=33
+dd if=${TEMP_FILE} of=prm_ptable.img conv=sparse bs=${SECTOR_SIZE} count=34
+dd if=${TEMP_FILE} of=sec_ptable.img conv=sparse skip=${BK_PTABLE_LBA} bs=${SECTOR_SIZE} count=33
 
 rm -f ${TEMP_FILE}
