@@ -12,12 +12,18 @@ on init
     # (if randomization is enabled the AEM-JIT will have a lower cache hit rate)
     write /proc/sys/kernel/randomize_va_space 0
 
+    # Initialize cpusets to boot-time values
+    write /dev/cpuset/foreground/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-7
+    write /dev/cpuset/background/cpus 0-7
+    write /dev/cpuset/system-background/cpus 0-7
+    write /dev/cpuset/top-app/cpus 0-7
+
 on fs
     mount_all /fstab.${ro.hardware}
     setprop ro.crypto.fuse_sdcard false
 
 on post-fs
-
     # For legacy support
     # See storage config details at http://source.android.com/tech/storage/
     # since /storage is mounted on post-fs in init.rc
