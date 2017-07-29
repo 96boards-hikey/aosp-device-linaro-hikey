@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-PRODUCT_COPY_FILES +=	device/linaro/hikey-kernel/Image.gz-hikey960:kernel \
-			device/linaro/hikey-kernel/hi3660-hikey960.dtb:hi3660-hikey960.dtb
+PRODUCT_COPY_FILES +=	$(TARGET_PREBUILT_KERNEL):kernel \
+			$(TARGET_PREBUILT_DTB):hi3660-hikey960.dtb
 
 PRODUCT_COPY_FILES +=	$(LOCAL_PATH)/fstab.hikey960:root/fstab.hikey960 \
 			device/linaro/hikey/init.common.rc:root/init.hikey960.rc \
