@@ -35,6 +35,8 @@ TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USE_PAN_DISPLAY := true
 
+TARGET_AUX_OS_VARIANT_LIST := neonkey
+
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
 BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
