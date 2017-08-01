@@ -10,4 +10,4 @@
 #/dev/block/platform/soc/ff3b0000.ufs/by-name/userdata    /data      ext4    discard,noauto_da_alloc,data=ordered,user_xattr,discard,barrier=1    wait
 /dev/block/sdd13    /data      ext4    discard,noauto_da_alloc,data=ordered,user_xattr,discard,barrier=1    wait
 /devices/platform/soc/ff37f000.dwmmc1/mmc_host/mmc*      auto       auto    defaults    voldmanaged=sdcard1:auto,encryptable=userdata
-/devices/platform/soc/ff200000.hisi_usb/ff100000.dwc3/xhci-hcd.1.auto/usb*               auto               auto      defaults  voldmanaged=usbdisk:auto,encryptable=userdata
+/devices/platform/soc/ff200000.hisi_usb/ff100000.dwc3/xhci-hcd.*.auto/usb*               auto               auto      defaults  voldmanaged=usbdisk:auto,encryptable=userdata
