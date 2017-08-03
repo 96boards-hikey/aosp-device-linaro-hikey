@@ -36,6 +36,8 @@ TARGET_USE_PAN_DISPLAY := true
 
 SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 
+TARGET_AUX_OS_VARIANT_LIST := neonkey
+
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
 BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
