@@ -35,5 +35,4 @@ $(DIST_DIR)/l-loader.bin: $(DIST_DIR)/fip.bin
 	mv l-loader.bin $(DIST_DIR)/
 
 clean:
-	rm -rf $(DIST_DIR)/fip.bin $(DIST_DIR)/l-loader.bin
-
+	rm -rf $(DIST_DIR)/fip.bin $(DIST_DIR)/l-loader.bin $(ANDROID_BUILD_TOP)/$(PRODUCT_OUT)/obj/uefi $(EDK2_DIR)/Build/HiKey
