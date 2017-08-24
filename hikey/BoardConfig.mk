@@ -1,9 +1,11 @@
 include device/linaro/hikey/BoardConfigCommon.mk
 
+TARGET_BOOTLOADER_BOARD_NAME := hikey
+TARGET_BOARD_PLATFORM := hikey
+
 TARGET_CPU_VARIANT := cortex-a53
 TARGET_2ND_CPU_VARIANT := cortex-a53
 
-TARGET_BOARD_PLATFORM := hikey
 ifeq ($(TARGET_KERNEL_USE), 3.18)
 BOARD_KERNEL_CMDLINE := console=ttyAMA3,115200 androidboot.console=ttyAMA3 androidboot.hardware=hikey firmware_class.path=/system/etc/firmware efi=noruntime
 else
