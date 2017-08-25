@@ -19,6 +19,8 @@ on init
     write /dev/cpuset/system-background/cpus 0-7
     write /dev/cpuset/top-app/cpus 0-7
 
+    start watchdogd
+
 on fs
     mount_all /fstab.${ro.hardware}
     setprop ro.crypto.fuse_sdcard false
@@ -99,3 +101,9 @@ service wpa_supplicant /system/vendor/bin/hw/wpa_supplicant \
      class main
      disabled
      oneshot
+
+# Set watchdog timer to 30 seconds and pet it every 10 seconds to get a 20 second margin
+service watchdogd /sbin/watchdogd 10 20
+    class core
+    oneshot
+    seclabel u:r:watchdogd:s0
