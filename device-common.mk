@@ -57,6 +57,11 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.mapper@2.0-impl
 
+# Memtrack
+PRODUCT_PACKAGES += memtrack.default \
+    android.hardware.memtrack@1.0-service \
+    android.hardware.memtrack@1.0-impl
+
 PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 			wl18xx-fw-4.bin \
 			wl18xx-conf.bin
