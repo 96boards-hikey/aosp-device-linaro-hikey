@@ -17,6 +17,9 @@
 # Adjust the dalvik heap to be appropriate for a tablet.
 $(call inherit-product-if-exists, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-heap.mk)
 
+# Set vendor kernel path
+PRODUCT_VENDOR_KERNEL_HEADERS := device/linaro/hikey/kernel-headers
+
 # Set custom settings
 DEVICE_PACKAGE_OVERLAYS := device/linaro/hikey/overlay
 
