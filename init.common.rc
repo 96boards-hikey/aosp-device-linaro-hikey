@@ -3,7 +3,7 @@ import init.${ro.hardware}.power.rc
 
 on init
     # mount debugfs
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
+    mount debugfs /sys/kernel/debug /sys/kernel/debug mode=755
 
     # disable transparent huge pages
     write /sys/kernel/mm/transparent_hugepage/enabled "never"
