@@ -6,3 +6,4 @@ subsystem usbmisc
 /dev/ttyAMA4     0660 bluetooth bluetooth
 /dev/mali        0666 system graphics
 /dev/mali0       0666 system graphics
+/dev/hifi_misc   0666 system audio
