@@ -40,6 +40,8 @@
 #include <hardware/audio_alsaops.h>
 #include <audio_effects/effect_aec.h>
 
+#include <sys/ioctl.h>
+#include <linux/audio_hifi.h>
 
 #define CARD_OUT 0
 #define PORT_CODEC 0
@@ -69,6 +71,7 @@ struct alsa_audio_device {
     struct alsa_stream_in *active_input;
     struct alsa_stream_out *active_output;
     bool mic_mute;
+    int hifi_dsp_fd;
 };
 
 struct alsa_stream_out {
@@ -249,6 +252,7 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     size_t frame_size = audio_stream_out_frame_size(stream);
     size_t out_frames = bytes / frame_size;
     int kernel_frames;
+    struct misc_io_pcm_buf_param pcmbuf;
 
     /* acquiring hw device mutex systematically is useful if a low priority thread is waiting
      * on the output stream mutex - e.g. executing select_mode() while holding the hw device
@@ -266,6 +270,15 @@ static ssize_t out_write(struct audio_stream_out *stream, const void* buffer,
     }
 
     pthread_mutex_unlock(&adev->lock);
+
+    if (adev->hifi_dsp_fd >= 0) {
+        pcmbuf.buf = (uint64_t)buffer;
+        pcmbuf.buf_size = bytes;
+        ret = ioctl(adev->hifi_dsp_fd, HIFI_MISC_IOCTL_PCM_GAIN, &pcmbuf);
+        if (ret) {
+            ALOGV("hifi_dsp: Error buffer processing: %d", errno);
+        }
+    }
 
     ret = pcm_mmap_write(out->pcm, buffer, out_frames * frame_size);
     if (ret == 0) {
@@ -630,7 +643,11 @@ static int adev_dump(const audio_hw_device_t *device, int fd)
 
 static int adev_close(hw_device_t *device)
 {
+    struct alsa_audio_device *adev = (struct alsa_audio_device *)device;
+
     ALOGV("adev_close");
+    if (adev->hifi_dsp_fd >= 0)
+        close(adev->hifi_dsp_fd);
     free(device);
     return 0;
 }
@@ -676,6 +693,12 @@ static int adev_open(const hw_module_t* module, const char* name,
 
     *device = &adev->hw_device.common;
 
+    adev->hifi_dsp_fd = open(HIFI_DSP_MISC_DRIVER, O_WRONLY, 0);
+    if (adev->hifi_dsp_fd < 0) {
+        ALOGW("hifi_dsp: Error opening device %d", errno);
+    } else {
+        ALOGI("hifi_dsp: Open device");
+    }
     return 0;
 }
 
