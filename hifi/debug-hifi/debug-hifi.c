@@ -57,10 +57,10 @@ int main(int argc, char *argv[])
     dump_buf.buf_size = memsize;
     dump_buf.clear = clear;
     ret = ioctl(hifi_dsp_fd, HIFI_MISC_IOCTL_DISPLAY_MSG, &dump_buf);
-    if (ret) {
+    if (ret < 0) { /* This IOCTL returns buffer size */
         ALOGE("Error %d accessing message buffer", errno);
     } else {
-        printf("%s\n", buffer);
+        printf("%s\n", ret > 0 ? buffer : "Buffer is empty");
     }
     free(buffer);
 out0:
