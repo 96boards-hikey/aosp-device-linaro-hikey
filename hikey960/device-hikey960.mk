@@ -26,6 +26,11 @@ PRODUCT_COPY_FILES +=	$(LOCAL_PATH)/fstab.hikey960:root/fstab.hikey960 \
 			frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml \
 			frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:system/etc/permissions/android.hardware.vulkan.version.xml
 
+# Copy hifi firmware
+PRODUCT_COPY_FILES += \
+	device/linaro/hikey/hifi/firmware/hifi-hikey960.img:system/etc/firmware/hifi/hifi.img
+
+
 # Build HiKey960 HDMI audio HAL. Experimental only may not work. FIXME
 PRODUCT_PACKAGES += audio.primary.hikey960
 
