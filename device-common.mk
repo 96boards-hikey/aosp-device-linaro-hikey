@@ -65,6 +65,9 @@ PRODUCT_PACKAGES += memtrack.default \
     android.hardware.memtrack@1.0-service \
     android.hardware.memtrack@1.0-impl
 
+# Nanohub tools
+PRODUCT_PACKAGES += stm32_flash nanoapp_cmd
+
 PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 			wl18xx-fw-4.bin \
 			wl18xx-conf.bin
