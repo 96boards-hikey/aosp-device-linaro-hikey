@@ -72,9 +72,10 @@ cat > tmp/$PRODUCT-$VERSION/flash-all.sh << EOF
 
 
 
-fastboot flash ptable		ptable.img
 fastboot flash xloader		sec_xloader.img
+fastboot flash ptable		ptable.img
 fastboot flash fastboot		fastboot.img
+fastboot reboot-bootloader
 fastboot flash nvme		nvme.img
 fastboot flash fw_lpm3		lpm3.img
 fastboot flash trustfirmware	bl31.bin
