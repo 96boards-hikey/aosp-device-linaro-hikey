@@ -15,9 +15,9 @@ fi
 
 echo "android out dir:${ANDROID_PRODUCT_OUT}"
 
-fastboot flash xloader "${INSTALLER_DIR}"/sec_xloader.img
-fastboot flash ptable "${INSTALLER_DIR}"/ptable.img
-fastboot flash fastboot "${INSTALLER_DIR}"/fastboot.img
+fastboot flash xloader "${INSTALLER_DIR}"/hisi-sec_xloader.img
+fastboot flash ptable "${INSTALLER_DIR}"/hisi-ptable.img
+fastboot flash fastboot "${INSTALLER_DIR}"/hisi-fastboot.img
 fastboot reboot-bootloader
 fastboot flash nvme "${INSTALLER_DIR}"/nvme.img
 fastboot flash fw_lpm3   "${INSTALLER_DIR}"/lpm3.img
