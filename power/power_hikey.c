@@ -309,7 +309,7 @@ static void hikey_cpufreq_set_interactive(struct power_module __unused *module, 
 }
 
 
-static void hikey_cpufreq_init(struct hikey_power_module *hikey)
+static void hikey_cpufreq_init(struct hikey_power_module __unused *hikey)
 {
     char buf[128];
     int len, i;
