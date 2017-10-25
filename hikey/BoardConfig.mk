@@ -12,6 +12,10 @@ else
 BOARD_KERNEL_CMDLINE := console=ttyFIQ0 androidboot.console=ttyFIQ0 androidboot.hardware=hikey firmware_class.path=/system/etc/firmware efi=noruntime
 endif
 
+ifneq ($(TARGET_SENSOR_MEZZANINE),)
+BOARD_KERNEL_CMDLINE += overlay_mgr.overlay_dt_entry=hardware_cfg_$(TARGET_SENSOR_MEZZANINE)
+endif
+
 ## printk.devkmsg only has meaning for kernel 4.9 and later
 ## it would be ignored by kernel 3.18 and kernel 4.4
 BOARD_KERNEL_CMDLINE += printk.devkmsg=on

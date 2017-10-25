@@ -36,13 +36,17 @@ TARGET_USE_PAN_DISPLAY := true
 
 SF_START_GRAPHICS_ALLOCATOR_SERVICE := true
 
-TARGET_AUX_OS_VARIANT_LIST := neonkey
+TARGET_AUX_OS_VARIANT_LIST := neonkey argonkey
 
 BOARD_SEPOLICY_DIRS += device/linaro/hikey/sepolicy
 BOARD_SEPOLICY_DIRS += system/bt/vendor_libs/linux/sepolicy
 
 DEVICE_MANIFEST_FILE := device/linaro/hikey/manifest.xml
 DEVICE_MATRIX_FILE := device/linaro/hikey/compatibility_matrix.xml
+
+ifneq ($(TARGET_SENSOR_MEZZANINE),)
+DEVICE_MANIFEST_FILE += device/linaro/hikey/sensorhal/manifest.xml
+endif
 
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
