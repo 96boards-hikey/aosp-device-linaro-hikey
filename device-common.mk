@@ -65,9 +65,6 @@ PRODUCT_PACKAGES += memtrack.default \
     android.hardware.memtrack@1.0-service \
     android.hardware.memtrack@1.0-impl
 
-# Nanohub tools
-PRODUCT_PACKAGES += stm32_flash nanoapp_cmd
-
 PRODUCT_PACKAGES +=	TIInit_11.8.32.bts \
 			wl18xx-fw-4.bin \
 			wl18xx-conf.bin
@@ -90,6 +87,29 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl
 
+# Sensor HAL
+ifneq ($(TARGET_SENSOR_MEZZANINE),)
+TARGET_USES_NANOHUB_SENSORHAL := true
+NANOHUB_SENSORHAL_LID_STATE_ENABLED := true
+NANOHUB_SENSORHAL_SENSORLIST := $(LOCAL_PATH)/sensorhal/sensorlist_$(TARGET_SENSOR_MEZZANINE).cpp
+NANOHUB_SENSORHAL_DIRECT_REPORT_ENABLED := true
+NANOHUB_SENSORHAL_DYNAMIC_SENSOR_EXT_ENABLED := true
+
+PRODUCT_PACKAGES += \
+    context_hub.default \
+    android.hardware.sensors@1.0-service \
+    android.hardware.sensors@1.0-impl \
+    android.hardware.contexthub@1.0-service \
+    android.hardware.contexthub@1.0-impl \
+    sensors.$(TARGET_PRODUCT)
+
+# Nanohub tools
+PRODUCT_PACKAGES += stm32_flash nanoapp_cmd nanotool
+
+PRODUCT_COPY_FILES += \
+    device/linaro/hikey/init.common.nanohub.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.nanohub.rc
+endif
+
 # Use Launcher3
 PRODUCT_PACKAGES += Launcher3
 
@@ -110,7 +130,6 @@ PRODUCT_COPY_FILES += \
         frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
         frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
         frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-        device/linaro/hikey/manifest.xml:system/vendor/manifest.xml \
         device/linaro/hikey/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
 
 # audio policy configuration
