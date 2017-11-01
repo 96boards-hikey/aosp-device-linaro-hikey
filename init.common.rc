@@ -8,10 +8,6 @@ on init
     # disable transparent huge pages
     write /sys/kernel/mm/transparent_hugepage/enabled "never"
 
-    # Disabled virtual memory randomization
-    # (if randomization is enabled the AEM-JIT will have a lower cache hit rate)
-    write /proc/sys/kernel/randomize_va_space 0
-
     # Initialize cpusets to boot-time values
     write /dev/cpuset/foreground/cpus 0-7
     write /dev/cpuset/background/cpus 0-7
