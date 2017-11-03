@@ -405,21 +405,25 @@ static int power_open(const hw_module_t* __unused module, const char* name,
     ALOGD("%s: enter; name=%s", __FUNCTION__, name);
 
     if (strcmp(name, POWER_HARDWARE_MODULE_ID) == 0) {
-        power_module_t *dev = (power_module_t *)calloc(1,
-                sizeof(power_module_t));
+        struct hikey_power_module *dev = (struct hikey_power_module *)calloc(1,
+                sizeof(struct hikey_power_module));
 
         if (dev) {
             /* Common hw_device_t fields */
-            dev->common.tag = HARDWARE_DEVICE_TAG;
-            dev->common.module_api_version = POWER_MODULE_API_VERSION_0_5;
-            dev->common.hal_api_version = HARDWARE_HAL_API_VERSION;
+            dev->base.common.tag = HARDWARE_DEVICE_TAG;
+            dev->base.common.module_api_version = POWER_MODULE_API_VERSION_0_5;
+            dev->base.common.hal_api_version = HARDWARE_HAL_API_VERSION;
 
-            dev->init = hikey_power_init;
-            dev->powerHint = hikey_power_hint;
-            dev->setInteractive = hikey_cpufreq_set_interactive;
-            dev->setFeature = set_feature;
+            dev->base.init = hikey_power_init;
+            dev->base.powerHint = hikey_power_hint;
+            dev->base.setInteractive = hikey_cpufreq_set_interactive;
+            dev->base.setFeature = set_feature;
 
-            *device = (hw_device_t*)dev;
+            pthread_mutex_init(&dev->lock, NULL);
+            dev->boostpulse_fd = -1;
+            dev->boostpulse_warned = 0;
+
+            *device = (hw_device_t*)&dev->base;
         } else
             retval = -ENOMEM;
     } else {
@@ -445,14 +449,5 @@ struct hikey_power_module HAL_MODULE_INFO_SYM = {
             .author = "The Android Open Source Project",
             .methods = &power_module_methods,
         },
-
-        .init = hikey_power_init,
-        .setInteractive = hikey_cpufreq_set_interactive,
-        .powerHint = hikey_power_hint,
-        .setFeature = set_feature,
     },
-
-    .lock = PTHREAD_MUTEX_INITIALIZER,
-    .boostpulse_fd = -1,
-    .boostpulse_warned = 0,
 };
