@@ -47,6 +47,7 @@ DEVICE_MATRIX_FILE := device/linaro/hikey/compatibility_matrix.xml
 
 ifneq ($(TARGET_SENSOR_MEZZANINE),)
 DEVICE_MANIFEST_FILE += device/linaro/hikey/sensorhal/manifest.xml
+DEVICE_MANIFEST_FILE += device/linaro/hikey/vr/manifest.xml
 endif
 
 ifeq ($(HOST_OS), linux)
