@@ -14,7 +14,7 @@ all: l-loader.bin ptable.img
 l-loader.bin: start.o $(BL1)
 	$(LD) -Bstatic -Tl-loader.lds -Ttext 0xf9800800 start.o -o loader
 	$(OBJCOPY) -O binary loader temp
-	python gen_loader.py -o $@ --img_loader=temp --img_bl1=$(BL1)
+	python gen_loader_hikey.py -o $@ --img_loader=temp --img_bl1=$(BL1) --img_ns_bl1u=recovery-fastboot.bin
 	rm -f loader temp
 
 ptable.img:
