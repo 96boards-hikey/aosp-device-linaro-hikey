@@ -1,2 +1,2 @@
 require board=hikey
-require version-bootloader=0.4
+require version-bootloader=0.6
