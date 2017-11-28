@@ -27,3 +27,4 @@ fastboot flash dts "${ANDROID_PRODUCT_OUT}"/dt.img
 fastboot flash system "${ANDROID_PRODUCT_OUT}"/system.img
 fastboot flash cache "${ANDROID_PRODUCT_OUT}"/cache.img
 fastboot flash userdata "${ANDROID_PRODUCT_OUT}"/userdata.img
+fastboot reboot
