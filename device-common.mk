@@ -148,9 +148,10 @@ PRODUCT_PACKAGES += Launcher3
 # Copy hardware config file(s)
 PRODUCT_COPY_FILES +=  \
         device/linaro/hikey/etc/permissions/android.hardware.screen.xml:system/etc/permissions/android.hardware.screen.xml \
-        frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
+        frameworks/native/data/etc/android.software.cts.xml:system/etc/permissions/android.software.cts.xml \
         frameworks/native/data/etc/android.software.app_widgets.xml:system/etc/permissions/android.software.app_widgets.xml \
         frameworks/native/data/etc/android.software.backup.xml:system/etc/permissions/android.software.backup.xml \
+        frameworks/native/data/etc/android.hardware.ethernet.xml:system/etc/permissions/android.hardware.ethernet.xml \
         frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
         frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
         frameworks/native/data/etc/android.software.device_admin.xml:system/etc/permissions/android.software.device_admin.xml
