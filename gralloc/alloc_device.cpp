@@ -446,13 +446,26 @@ static int alloc_device_alloc(alloc_device_t *dev, int w, int h, int format, int
 				bpp = 2;
 				break;
 
+			case HAL_PIXEL_FORMAT_BLOB:
+				if (h != 1) {
+					AERR("Height for HAL_PIXEL_FORMAT_BLOB must be 1. h=%d", h);
+					return -EINVAL;
+				}
+				break;
+
 			default:
+				AERR("The format is not supported yet: format=%d\n",  format);
 				return -EINVAL;
 		}
 
-		size_t bpr = GRALLOC_ALIGN(w * bpp, 64);
-		size = bpr * h;
-		stride = bpr / bpp;
+		if (format == HAL_PIXEL_FORMAT_BLOB) {
+			stride = 0; /* No 'rows', it's effectively a long one dimensional array */
+			size = w;
+		}else{
+			size_t bpr = GRALLOC_ALIGN(w * bpp, 64);
+			size = bpr * h;
+			stride = bpr / bpp;
+		}
 	}
 
 	int err;
