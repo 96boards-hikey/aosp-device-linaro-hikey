@@ -442,10 +442,9 @@ static void hikey_power_hint(struct power_module *module, power_hint_t hint,
     pthread_mutex_unlock(&hikey->lock);
 }
 
-static void set_feature(struct power_module *module, feature_t feature, int state)
+static void set_feature(struct power_module __unused *module,
+                        feature_t feature, int state)
 {
-    struct hikey_power_module *hikey = container_of(module,
-                                              struct hikey_power_module, base);
     switch (feature) {
     default:
         ALOGW("Error setting the feature %d and state %d, it doesn't exist\n",
