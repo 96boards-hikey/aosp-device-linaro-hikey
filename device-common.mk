@@ -101,8 +101,7 @@ PRODUCT_PACKAGES += \
     android.hardware.sensors@1.0-service \
     android.hardware.sensors@1.0-impl \
     android.hardware.contexthub@1.0-service \
-    android.hardware.contexthub@1.0-impl \
-    sensors.$(TARGET_PRODUCT)
+    android.hardware.contexthub@1.0-impl
 
 # Nanohub tools
 PRODUCT_PACKAGES += stm32_flash nanoapp_cmd nanotool
