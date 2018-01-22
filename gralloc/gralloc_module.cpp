@@ -18,6 +18,7 @@
 
 #include <errno.h>
 #include <pthread.h>
+#include <string.h>
 
 #include <cutils/log.h>
 #include <cutils/atomic.h>
