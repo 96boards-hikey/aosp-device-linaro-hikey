@@ -19,9 +19,9 @@ fastboot flash xloader "${INSTALLER_DIR}"/hisi-sec_xloader.img
 fastboot flash ptable "${INSTALLER_DIR}"/hisi-ptable.img
 fastboot flash fastboot "${INSTALLER_DIR}"/hisi-fastboot.img
 fastboot reboot-bootloader
-fastboot flash nvme "${INSTALLER_DIR}"/nvme.img
-fastboot flash fw_lpm3   "${INSTALLER_DIR}"/lpm3.img
-fastboot flash trustfirmware   "${INSTALLER_DIR}"/bl31.bin
+fastboot flash nvme "${INSTALLER_DIR}"/hisi-nvme.img
+fastboot flash fw_lpm3   "${INSTALLER_DIR}"/hisi-lpm3.img
+fastboot flash trustfirmware   "${INSTALLER_DIR}"/hisi-bl31.bin
 fastboot flash boot "${ANDROID_PRODUCT_OUT}"/boot.img
 fastboot flash dts "${ANDROID_PRODUCT_OUT}"/dt.img
 fastboot flash system "${ANDROID_PRODUCT_OUT}"/system.img
