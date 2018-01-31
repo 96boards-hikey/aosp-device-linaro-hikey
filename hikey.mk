@@ -1,7 +1,17 @@
 ifndef TARGET_KERNEL_USE
 TARGET_KERNEL_USE=4.9
 endif
+
+ifndef TARGET_COMPRESSED_KERNEL
+TARGET_COMPRESSED_KERNEL=false
+endif
+
+ifeq ($(TARGET_COMPRESSED_KERNEL), false)
 TARGET_PREBUILT_KERNEL := device/linaro/hikey-kernel/Image-dtb-$(TARGET_KERNEL_USE)
+else
+TARGET_PREBUILT_KERNEL := device/linaro/hikey-kernel/Image.gz-dtb-$(TARGET_KERNEL_USE)
+endif
+
 TARGET_PREBUILT_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb-$(TARGET_KERNEL_USE)
 
 ifeq ($(TARGET_KERNEL_USE), 3.18)
