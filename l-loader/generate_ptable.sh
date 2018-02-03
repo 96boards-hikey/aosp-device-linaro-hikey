@@ -1,12 +1,13 @@
 #!/bin/sh
 #
-# Generate partition table for HiKey eMMC or HiKey960 UFS
+# Generate partition table for HiKey eMMC or HiKey960/HiKey970 UFS
 #
 # tiny: for testing purpose.
 # aosp: (same as linux with userdata).
 # linux: (same as aosp without userdata).
 # swap: (similar to asop, drop reserved, 1.5G of swap)
 
+PRODUCT=${PRODUCT:-hikey960}
 PTABLE=${PTABLE:-aosp}
 SECTOR_SIZE=${SECTOR_SIZE:-512}
 SGDISK=${SGDISK:-sgdisk}
@@ -131,28 +132,62 @@ case ${PTABLE} in
     fakeroot ${SGDISK} -n 5:0:+256M -t 5:0700 -u 5:10cc3268-05f0-4db2-aa00-707361427fc8 -c 5:"cache" ${TEMP_FILE}
     #[6: fw_lpm3: 288M-289M]
     fakeroot ${SGDISK} -n 6:0:+1M -t 6:0700 -u 6:5d8481d4-c170-4aa8-9438-8743c73ea8f5 -c 6:"fw_lpm3" ${TEMP_FILE}
-    #[7: boot: 289M-353M]
-    fakeroot ${SGDISK} -n 7:0:+64M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
-    #[8: dts: 353M-369M]
-    fakeroot ${SGDISK} -n 8:0:+16M -t 8:0700 -u 8:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 8:"dts" ${TEMP_FILE}
-    #[9: trustfirmware: 369M-371M]
-    fakeroot ${SGDISK} -n 9:0:+2M -t 9:0700 -u 9:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 9:"trustfirmware" ${TEMP_FILE}
-    #[10: system: 371M-5059M]
-    fakeroot ${SGDISK} -n 10:0:+4688M -t 10:8300 -u 10:c3e50923-fb85-4153-b925-759614d4dfcd -c 10:"system" ${TEMP_FILE}
-    #[11: vendor: 5059M-5843M]
-    fakeroot ${SGDISK} -n 11:0:+784M -t 11:0700 -u 11:919d7080-d71a-4ae1-9227-e4585210c837 -c 11:"vendor" ${TEMP_FILE}
-    #[12: reserved: 5843M-5844M]
-    fakeroot ${SGDISK} -n 12:0:+1M -t 12:0700 -u 12:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 12:"reserved" ${TEMP_FILE}
-    case ${PTABLE} in
-      aosp-32g)
-        #[13: userdata: 5844M-End]
-        fakeroot ${SGDISK} -n -E -t 13:8300 -u 13:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 13:"userdata" ${TEMP_FILE}
+    case ${PRODUCT} in
+      hikey960)
+        #[7: boot: 289M-353M]
+        fakeroot ${SGDISK} -n 7:0:+64M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
+        #[8: dts: 353M-369M]
+        fakeroot ${SGDISK} -n 8:0:+16M -t 8:0700 -u 8:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 8:"dts" ${TEMP_FILE}
+        #[9: trustfirmware: 369M-371M]
+        fakeroot ${SGDISK} -n 9:0:+2M -t 9:0700 -u 9:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 9:"trustfirmware" ${TEMP_FILE}
+        #[10: system: 371M-5059M]
+        fakeroot ${SGDISK} -n 10:0:+4688M -t 10:8300 -u 10:c3e50923-fb85-4153-b925-759614d4dfcd -c 10:"system" ${TEMP_FILE}
+        #[11: vendor: 5059M-5843M]
+        fakeroot ${SGDISK} -n 11:0:+784M -t 11:0700 -u 11:919d7080-d71a-4ae1-9227-e4585210c837 -c 11:"vendor" ${TEMP_FILE}
+        #[12: reserved: 5843M-5844M]
+        fakeroot ${SGDISK} -n 12:0:+1M -t 12:0700 -u 12:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 12:"reserved" ${TEMP_FILE}
+        case ${PTABLE} in
+          aosp-32g)
+            #[13: userdata: 5844M-End]
+            fakeroot ${SGDISK} -n -E -t 13:8300 -u 13:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 13:"userdata" ${TEMP_FILE}
+            ;;
+          aosp-32g-spare)
+            #[13: userdata: 5844M-9844M]
+            fakeroot ${SGDISK} -n 13:0:+1000M -t 13:8300 -u 13:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 13:"userdata" ${TEMP_FILE}
+            #[14: swap: 9844M-End]
+            fakeroot ${SGDISK} -n -E -t 14:8300 -u 14:9501eade-20fb-4bc7-83d3-62c1be3ed92d -c 14:"swap" ${TEMP_FILE}
+            ;;
+        esac
         ;;
-      aosp-32g-spare)
-        #[13: userdata: 5844M-9844M]
-        fakeroot ${SGDISK} -n 13:0:+1000M -t 13:8300 -u 13:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 13:"userdata" ${TEMP_FILE}
-        #[14: swap: 9844M-End]
-        fakeroot ${SGDISK} -n -E -t 14:8300 -u 14:9501eade-20fb-4bc7-83d3-62c1be3ed92d -c 14:"swap" ${TEMP_FILE}
+      hikey970)
+        #[7: boot: 289M-369M]
+        fakeroot ${SGDISK} -n 7:0:+80M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
+	    #[8: ramdisk: 369M-385M]
+        fakeroot ${SGDISK} -n 8:0:+16M -t 8:EF00 -u 8:d3340696-9b95-4c64-8df6-e6d4548fba14 -c 8:"ramdisk" ${TEMP_FILE}
+        #[9: dts: 385M-401M]
+        fakeroot ${SGDISK} -n 9:0:+16M -t 9:0700 -u 9:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 9:"dts" ${TEMP_FILE}
+	    #[10: dto: 401M-417M]
+        fakeroot ${SGDISK} -n 10:0:+16M -t 10:0700 -u 10:6e53b0bb-fa7e-4206-b607-5ae699e9f099 -c 10:"dto" ${TEMP_FILE}
+        #[11: trustfirmware: 417M-419M]
+        fakeroot ${SGDISK} -n 11:0:+2M -t 11:0700 -u 11:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 11:"trustfirmware" ${TEMP_FILE}
+        #[12: system: 419M-5107M]
+        fakeroot ${SGDISK} -n 12:0:+4688M -t 12:8300 -u 12:c3e50923-fb85-4153-b925-759614d4dfcd -c 12:"system" ${TEMP_FILE}
+        #[13: vendor: 5107M-5891M]
+        fakeroot ${SGDISK} -n 13:0:+784M -t 13:0700 -u 13:919d7080-d71a-4ae1-9227-e4585210c837 -c 13:"vendor" ${TEMP_FILE}
+        #[14: reserved: 5891M-5892M]
+        fakeroot ${SGDISK} -n 14:0:+1M -t 14:0700 -u 14:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 14:"reserved" ${TEMP_FILE}
+        case ${PTABLE} in
+          aosp-32g)
+            #[15: userdata: 5892M-End]
+            fakeroot ${SGDISK} -n -E -t 15:8300 -u 15:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 15:"userdata" ${TEMP_FILE}
+            ;;
+          aosp-32g-spare)
+            #[15: userdata: 5892M-6892M]
+            fakeroot ${SGDISK} -n 15:0:+1000M -t 15:8300 -u 15:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 15:"userdata" ${TEMP_FILE}
+            #[16: swap: 6892M-End]
+            fakeroot ${SGDISK} -n -E -t 16:8300 -u 16:9501eade-20fb-4bc7-83d3-62c1be3ed92d -c 16:"swap" ${TEMP_FILE}
+            ;;
+        esac
         ;;
     esac
     ;;
@@ -171,18 +206,40 @@ case ${PTABLE} in
     fakeroot ${SGDISK} -n 5:0:+256M -t 5:0700 -u 5:10cc3268-05f0-4db2-aa00-707361427fc8 -c 5:"cache" ${TEMP_FILE}
     #[6: fw_lpm3: 288M-289M]
     fakeroot ${SGDISK} -n 6:0:+1M -t 6:0700 -u 6:5d8481d4-c170-4aa8-9438-8743c73ea8f5 -c 6:"fw_lpm3" ${TEMP_FILE}
-    #[7: boot: 289M-353M]
-    fakeroot ${SGDISK} -n 7:0:+64M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
-    #[8: dts: 353M-369M]
-    fakeroot ${SGDISK} -n 8:0:+16M -t 8:0700 -u 8:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 8:"dts" ${TEMP_FILE}
-    #[9: trustfirmware: 369M-371M]
-    fakeroot ${SGDISK} -n 9:0:+2M -t 9:0700 -u 9:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 9:"trustfirmware" ${TEMP_FILE}
-    #[10: system: 371M-5059M]
-    fakeroot ${SGDISK} -n 10:0:+4688M -t 10:8300 -u 10:c3e50923-fb85-4153-b925-759614d4dfcd -c 10:"system" ${TEMP_FILE}
-    #[11: vendor: 5059M-5843M]
-    fakeroot ${SGDISK} -n 11:0:+784M -t 11:0700 -u 11:919d7080-d71a-4ae1-9227-e4585210c837 -c 11:"vendor" ${TEMP_FILE}
-    #[12: reserved: 5843M-5844M]
-    fakeroot ${SGDISK} -n 12:0:+1M -t 12:0700 -u 12:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 12:"reserved" ${TEMP_FILE}
+    case ${PRODUCT} in
+      hikey960)
+        #[7: boot: 289M-353M]
+        fakeroot ${SGDISK} -n 7:0:+64M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
+        #[8: dts: 353M-369M]
+        fakeroot ${SGDISK} -n 8:0:+16M -t 8:0700 -u 8:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 8:"dts" ${TEMP_FILE}
+        #[9: trustfirmware: 369M-371M]
+        fakeroot ${SGDISK} -n 9:0:+2M -t 9:0700 -u 9:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 9:"trustfirmware" ${TEMP_FILE}
+        #[10: system: 371M-5059M]
+        fakeroot ${SGDISK} -n 10:0:+4688M -t 10:8300 -u 10:c3e50923-fb85-4153-b925-759614d4dfcd -c 10:"system" ${TEMP_FILE}
+        #[11: vendor: 5059M-5843M]
+        fakeroot ${SGDISK} -n 11:0:+784M -t 11:0700 -u 11:919d7080-d71a-4ae1-9227-e4585210c837 -c 11:"vendor" ${TEMP_FILE}
+        #[12: reserved: 5843M-5844M]
+        fakeroot ${SGDISK} -n 12:0:+1M -t 12:0700 -u 12:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 12:"reserved" ${TEMP_FILE}
+        ;;
+      hikey970)
+        #[7: boot: 289M-369M]
+        fakeroot ${SGDISK} -n 7:0:+80M -t 7:EF00 -u 7:d3340696-9b95-4c64-8df6-e6d4548fba41 -c 7:"boot" ${TEMP_FILE}
+	    #[8: ramdisk: 369M-385M]
+        fakeroot ${SGDISK} -n 8:0:+16M -t 8:EF00 -u 8:d3340696-9b95-4c64-8df6-e6d4548fba14 -c 8:"ramdisk" ${TEMP_FILE}
+        #[9: dts: 385M-401M]
+        fakeroot ${SGDISK} -n 9:0:+16M -t 9:0700 -u 9:6e53b0bb-fa7e-4206-b607-5ae699e9f066 -c 9:"dts" ${TEMP_FILE}
+	    #[10: dto: 401M-417M]
+        fakeroot ${SGDISK} -n 10:0:+16M -t 10:0700 -u 10:6e53b0bb-fa7e-4206-b607-5ae699e9f099 -c 10:"dto" ${TEMP_FILE}
+        #[11: trustfirmware: 417M-419M]
+        fakeroot ${SGDISK} -n 11:0:+2M -t 11:0700 -u 11:f1e126a6-ceef-45c1-aace-29f33ac9cf13 -c 11:"trustfirmware" ${TEMP_FILE}
+        #[12: system: 419M-5107M]
+        fakeroot ${SGDISK} -n 12:0:+4688M -t 12:8300 -u 12:c3e50923-fb85-4153-b925-759614d4dfcd -c 12:"system" ${TEMP_FILE}
+        #[13: vendor: 5107M-5891M]
+        fakeroot ${SGDISK} -n 13:0:+784M -t 13:0700 -u 13:919d7080-d71a-4ae1-9227-e4585210c837 -c 13:"vendor" ${TEMP_FILE}
+        #[14: reserved: 5891M-5892M]
+        fakeroot ${SGDISK} -n 14:0:+1M -t 14:0700 -u 14:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 14:"reserved" ${TEMP_FILE}
+        ;;
+    esac
     ;;
 esac
 
