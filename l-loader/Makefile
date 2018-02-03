@@ -13,3 +13,11 @@ hikey960:
 .PHONY: hikey960-clean
 hikey960-clean:
 	$(MAKE) -f hikey960.mk clean
+
+.PHONY: hikey970
+hikey970:
+	$(MAKE) -f hikey970.mk
+
+.PHONY: hikey970-clean
+hikey970-clean:
+	$(MAKE) -f hikey970.mk clean
