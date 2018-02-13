@@ -1,4 +1,4 @@
-ifneq ($(filter hikey%, $(TARGET_DEVICE)),)
+ifneq ($(filter hikey960, $(TARGET_DEVICE)),)
 ifneq ($(TARGET_NO_DTIMAGE), true)
 
 MKDTIMG := device/linaro/hikey/installer/hikey960/mkdtimg
