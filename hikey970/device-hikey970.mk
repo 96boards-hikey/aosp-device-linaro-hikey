@@ -15,32 +15,30 @@
 #
 
 PRODUCT_COPY_FILES +=	$(TARGET_PREBUILT_KERNEL):kernel \
-			$(TARGET_PREBUILT_DTB):hi3660-hikey960.dtb
+			$(TARGET_PREBUILT_DTB):kirin970-hikey970.dtb
 
-PRODUCT_COPY_FILES +=	$(LOCAL_PATH)/fstab.hikey960:root/fstab.hikey960 \
-			device/linaro/hikey/init.common.rc:root/init.hikey960.rc \
-			device/linaro/hikey/init.hikey960.power.rc:root/init.hikey960.power.rc \
-			device/linaro/hikey/init.common.usb.rc:root/init.hikey960.usb.rc \
-			device/linaro/hikey/ueventd.common.rc:root/ueventd.hikey960.rc \
-			device/linaro/hikey/common.kl:system/usr/keylayout/hikey960.kl \
+PRODUCT_COPY_FILES +=	$(LOCAL_PATH)/fstab.hikey970:root/fstab.hikey970 \
+			device/linaro/hikey/init.common.rc:root/init.hikey970.rc \
+			device/linaro/hikey/init.hikey970.power.rc:root/init.hikey970.power.rc \
+			device/linaro/hikey/init.common.usb.rc:root/init.hikey970.usb.rc \
+			device/linaro/hikey/ueventd.common.rc:root/ueventd.hikey970.rc \
+			device/linaro/hikey/common.kl:system/usr/keylayout/hikey970.kl \
 			frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml \
 			frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:system/etc/permissions/android.hardware.vulkan.version.xml
 
 # Copy hifi firmware
 PRODUCT_COPY_FILES += \
-	device/linaro/hikey/hifi/firmware/hifi-hikey960.img:system/etc/firmware/hifi/hifi.img
+	device/linaro/hikey/hifi/firmware/hifi-hikey970.img:system/etc/firmware/hifi/hifi.img
 
 
-# Build HiKey960 HDMI audio HAL. Experimental only may not work. FIXME
-PRODUCT_PACKAGES += audio.primary.hikey960
+# Build HiKey970 HDMI audio HAL. Experimental only may not work. FIXME
+PRODUCT_PACKAGES += audio.primary.hikey970
 
-PRODUCT_PACKAGES += gralloc.hikey960
+PRODUCT_PACKAGES += gralloc.hikey970
 
-PRODUCT_PACKAGES += power.hikey960
+PRODUCT_PACKAGES += power.hikey970
 
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += sys.usb.controller=ff100000.dwc3
 
-PRODUCT_PACKAGES += sensors.hikey960
-
 # Include vendor binaries
-$(call inherit-product-if-exists, vendor/linaro/hikey960/device-vendor.mk)
+$(call inherit-product-if-exists, vendor/linaro/hikey970/device-vendor.mk)
