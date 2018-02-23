@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include <cstdlib>
 #include <string.h>
 #include <errno.h>
 #include <inttypes.h>
@@ -44,6 +45,15 @@
 #include "mali_gralloc_formats.h"
 #include "mali_gralloc_usages.h"
 #include "mali_gralloc_bufferdescriptor.h"
+#include "ion_4.12.h"
+
+
+
+#define ION_SYSTEM     (char*)"ion_system_heap"
+#define ION_CMA        (char*)"linux,cma"
+static bool gralloc_legacy_ion;
+static int system_heap_id;
+static int cma_heap_id;
 
 static void mali_gralloc_ion_free_internal(buffer_handle_t *pHandle, uint32_t num_hnds);
 
@@ -93,6 +103,54 @@ static void init_afbc(uint8_t *buf, uint64_t internal_format, int w, int h)
 		buf += sizeof(headers[layout]);
 	}
 }
+
+
+
+static int find_heap_id(int ion_client, char *name)
+{
+	int i, ret, cnt, heap_id = -1;
+	struct ion_heap_data *data;
+
+	ret = ion_query_heap_cnt(ion_client, &cnt);
+
+	if (ret)
+	{
+		AERR("ion count query failed with %s", strerror(errno));
+		return -1;
+	}
+
+	data = (struct ion_heap_data *)malloc(cnt * sizeof(*data));
+	if (!data)
+	{
+		AERR("Error allocating data %s\n", strerror(errno));
+		return -1;
+	}
+
+	ret = ion_query_get_heaps(ion_client, cnt, data);
+	if (ret)
+	{
+		AERR("Error querying heaps from ion %s", strerror(errno));
+	}
+	else
+	{
+		for (i = 0; i < cnt; i++) {
+			if (strcmp(data[i].name, name) == 0) {
+				heap_id = data[i].heap_id;
+				break;
+			}
+		}
+
+		if (i == cnt)
+		{
+			AERR("No %s Heap Found amongst %d heaps\n", name, cnt);
+			heap_id = -1;
+		}
+	}
+
+	free(data);
+	return heap_id;
+}
+
 
 static int alloc_from_ion_heap(int ion_fd, size_t size, unsigned int heap_mask, unsigned int flags, int *min_pgsz)
 {
@@ -353,6 +411,24 @@ int mali_gralloc_ion_allocate(mali_gralloc_module *m, const gralloc_buffer_descr
 			AERR("ion_open failed with %s", strerror(errno));
 			return -1;
 		}
+
+		gralloc_legacy_ion = ion_is_legacy(m->ion_client);
+		if (!gralloc_legacy_ion)
+		{
+			system_heap_id = find_heap_id(m->ion_client, ION_SYSTEM);
+			cma_heap_id = find_heap_id(m->ion_client, ION_CMA);
+			if (system_heap_id < 0)
+			{
+				ion_close(m->ion_client);
+				m->ion_client = -1;
+				AERR( "ion_open failed: no system heap found" );
+				return -1;
+			}
+			if (cma_heap_id < 0) {
+				AERR("No cma heap found, falling back to system");
+				cma_heap_id = system_heap_id;
+			}
+		}
 	}
 
 	*shared_backend = check_buffers_sharable(descriptors, numDescriptors);
@@ -374,8 +450,24 @@ int mali_gralloc_ion_allocate(mali_gralloc_module *m, const gralloc_buffer_descr
 		}
 
 		set_ion_flags(heap_mask, usage, &priv_heap_flag, &ion_flags);
+		if (gralloc_legacy_ion)
+		{
+			shared_fd = alloc_from_ion_heap(m->ion_client, max_bufDescriptor->size, heap_mask, ion_flags, &min_pgsz);
+		}
+		else
+		{
+			int heap = 1 << system_heap_id;
+			if (heap_mask == ION_HEAP_TYPE_DMA_MASK)
+				heap = 1 << cma_heap_id;
 
-		shared_fd = alloc_from_ion_heap(m->ion_client, max_bufDescriptor->size, heap_mask, ion_flags, &min_pgsz);
+			ret = ion_alloc_fd(m->ion_client, max_bufDescriptor->size, 0, heap, 0, &(shared_fd));
+			if (ret != 0)
+			{
+				AERR("Failed to ion_alloc_fd from ion_client:%d", m->ion_client);
+				return -1;
+			}
+			min_pgsz = SZ_4K;
+		}
 
 		if (shared_fd < 0)
 		{
@@ -437,8 +529,25 @@ int mali_gralloc_ion_allocate(mali_gralloc_module *m, const gralloc_buffer_descr
 			}
 
 			set_ion_flags(heap_mask, usage, &priv_heap_flag, &ion_flags);
+			if (gralloc_legacy_ion)
+			{
+				shared_fd = alloc_from_ion_heap(m->ion_client, bufDescriptor->size, heap_mask, ion_flags, &min_pgsz);
+			}
+			else
+			{
+				int heap = 1 << system_heap_id;
+				if (heap_mask == ION_HEAP_TYPE_DMA_MASK)
+					heap = 1 << cma_heap_id;
 
-			shared_fd = alloc_from_ion_heap(m->ion_client, bufDescriptor->size, heap_mask, ion_flags, &min_pgsz);
+				ret = ion_alloc_fd(m->ion_client, bufDescriptor->size, 0, heap, 0, &(shared_fd));
+				if (ret != 0)
+				{
+					AERR("Failed to ion_alloc_fd from ion_client:%d", m->ion_client);
+					mali_gralloc_ion_free_internal(pHandle, numDescriptors);
+					return -1;
+				}
+				min_pgsz = SZ_4K;
+			}
 
 			if (shared_fd < 0)
 			{
@@ -540,6 +649,9 @@ static void mali_gralloc_ion_free_internal(buffer_handle_t *pHandle, uint32_t nu
 
 void mali_gralloc_ion_sync(const mali_gralloc_module *m, private_handle_t *hnd)
 {
+	if (!gralloc_legacy_ion)
+		return;
+
 	if (m != NULL && hnd != NULL)
 	{
 		switch (hnd->flags & private_handle_t::PRIV_FLAGS_USES_ION)
