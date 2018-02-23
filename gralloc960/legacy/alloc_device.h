@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2013 ARM Limited. All rights reserved.
+ * Copyright (C) 2010 ARM Limited. All rights reserved.
+ *
+ * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +16,7 @@
  * limitations under the License.
  */
 
-int alloc_backend_alloc(alloc_device_t* dev, size_t size, int usage, buffer_handle_t* pHandle, uint64_t fmt, int w, int h);
+#include <hardware/hardware.h>
 
-int alloc_backend_alloc_framebuffer(struct private_module_t* m, struct private_handle_t* hnd);
-
-void alloc_backend_alloc_free(struct private_handle_t const* hnd, struct private_module_t* m);
-
-int alloc_backend_open(alloc_device_t *dev);
-
-int alloc_backend_close(struct hw_device_t *device);
+// Create an alloc device
+int alloc_device_open(hw_module_t const *module, const char *name, hw_device_t **device);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 ARM Limited. All rights reserved.
+ * Copyright (C) 2016-2017 ARM Limited. All rights reserved.
  *
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -15,16 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef MALI_GRALLOC_BUFFERALLOCATION_H_
+#define MALI_GRALLOC_BUFFERALLOCATION_H_
 
 #include <hardware/hardware.h>
-#include "gralloc_priv.h"
+#include "mali_gralloc_module.h"
+#include "mali_gralloc_private_interface_types.h"
+#include "mali_gralloc_buffer.h"
+#include "mali_gralloc_bufferdescriptor.h"
 
-// Create a framebuffer device
-int framebuffer_device_open(hw_module_t const *module, const char *name, hw_device_t **device);
+int mali_gralloc_buffer_allocate(mali_gralloc_module *m, const gralloc_buffer_descriptor_t *descriptors,
+                                 uint32_t numDescriptors, buffer_handle_t *pHandle, bool *shared_backend);
+int mali_gralloc_buffer_free(buffer_handle_t pHandle);
 
-// Initialize the framebuffer (must keep module lock before calling
-int init_frame_buffer_locked(struct private_module_t *module);
-
-// Allocate framebuffer buffer
-int fb_alloc_framebuffer(mali_gralloc_module *m, uint64_t consumer_usage, uint64_t producer_usage,
-                         buffer_handle_t *pHandle, int *stride, int *byte_stride);
+#endif /* MALI_GRALLOC_BUFFERALLOCATION_H_ */

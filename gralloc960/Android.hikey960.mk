@@ -16,8 +16,6 @@
 # limitations under the License.
 
 $(info gralloc for hikey960)
-GRALLOC_FB_SWAP_RED_BLUE := 0
-GRALLOC_DEPTH := GRALLOC_32_BITS
 
 # GPU support for AFBC 1.0
 MALI_GPU_SUPPORT_AFBC_BASIC=1
@@ -34,12 +32,16 @@ MALI_GPU_USE_YUV_AFBC_WIDEBLK=0
 # Software behaviour defines
 #
 
+# Gralloc1 support
+GRALLOC_USE_GRALLOC1_API=0
 # Use ION DMA heap for all allocations. Default is system heap.
 GRALLOC_USE_ION_DMA_HEAP=0
 # Use ION Compound heap for all allocations. Default is system heap.
 GRALLOC_USE_ION_COMPOUND_PAGE_HEAP=0
 # Properly initializes an empty AFBC buffer
 GRALLOC_INIT_AFBC=0
+# fbdev bitdepth to use
+GRALLOC_DEPTH=GRALLOC_32_BITS
 # When enabled, forces display framebuffer format to BGRA_8888
 GRALLOC_FB_SWAP_RED_BLUE=0
 # Disables the framebuffer HAL device. When a hwc impl is available.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 ARM Limited. All rights reserved.
+ * Copyright (C) 2016 ARM Limited. All rights reserved.
  *
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -16,16 +16,12 @@
  * limitations under the License.
  */
 
-#ifndef _GRALLOC_VSYNC_H_
-#define _GRALLOC_VSYNC_H_
+#ifndef MALI_GRALLOC_REFERENCE_H_
+#define MALI_GRALLOC_REFERENCE_H_
 
-struct framebuffer_device_t;
+#include "gralloc_priv.h"
 
-/* Enables vsync interrupt. */
-int gralloc_vsync_enable(struct framebuffer_device_t *dev);
-/* Disables vsync interrupt. */
-int gralloc_vsync_disable(struct framebuffer_device_t *dev);
-/* Waits for the vsync interrupt. */
-int gralloc_wait_for_vsync(struct framebuffer_device_t *dev);
+int mali_gralloc_reference_retain(mali_gralloc_module const *module, buffer_handle_t handle);
+int mali_gralloc_reference_release(mali_gralloc_module const *module, buffer_handle_t handle, bool canFree);
 
-#endif /* _GRALLOC_VSYNC_H_ */
+#endif /* MALI_GRALLOC_REFERENCE_H_ */

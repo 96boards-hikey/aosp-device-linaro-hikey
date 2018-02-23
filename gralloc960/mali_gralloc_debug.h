@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 ARM Limited. All rights reserved.
+ * Copyright (C) 2016 ARM Limited. All rights reserved.
  *
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -16,15 +16,24 @@
  * limitations under the License.
  */
 
+#ifndef MALI_GRALLOC_DEBUG_H_
+#define MALI_GRALLOC_DEBUG_H_
+
+#include <utils/String8.h>
 #include <hardware/hardware.h>
 #include "gralloc_priv.h"
+#include "mali_gralloc_module.h"
 
-// Create a framebuffer device
-int framebuffer_device_open(hw_module_t const *module, const char *name, hw_device_t **device);
+#if GRALLOC_USE_GRALLOC1_API == 1
+#include <hardware/gralloc1.h>
+#else
+#include <hardware/gralloc.h>
+#endif
 
-// Initialize the framebuffer (must keep module lock before calling
-int init_frame_buffer_locked(struct private_module_t *module);
+void mali_gralloc_dump_buffer_add(private_handle_t *handle);
+void mali_gralloc_dump_buffer_erase(private_handle_t *handle);
 
-// Allocate framebuffer buffer
-int fb_alloc_framebuffer(mali_gralloc_module *m, uint64_t consumer_usage, uint64_t producer_usage,
-                         buffer_handle_t *pHandle, int *stride, int *byte_stride);
+void mali_gralloc_dump_string(android::String8 &buf, const char *fmt, ...);
+void mali_gralloc_dump_buffers(android::String8 &dumpBuffer, uint32_t *outSize);
+void mali_gralloc_dump_internal(uint32_t *outSize, char *outBuffer);
+#endif
