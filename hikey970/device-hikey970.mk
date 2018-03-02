@@ -42,3 +42,23 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += sys.usb.controller=ff100000.dwc3
 
 # Include vendor binaries
 $(call inherit-product-if-exists, vendor/linaro/hikey970/device-vendor.mk)
+
+# GPU drivers
+OVERRIDE_RS_DRIVER := libRSDriverArm.so
+
+PRODUCT_PACKAGES += android.hardware.renderscript@1.0-impl
+
+PRODUCT_COPY_FILES += \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libGLES_mali.so:system/vendor/lib/egl/libGLES_mali.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libGLES_mali.so:system/vendor/lib64/egl/libGLES_mali.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libGLES_mali.so:system/vendor/lib/hw/vulkan.hikey970.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libGLES_mali.so:system/vendor/lib64/hw/vulkan.hikey970.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libGLES_mali.so:system/vendor/lib/libOpenCL.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libGLES_mali.so:system/vendor/lib64/libOpenCL.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libRSDriverArm.so:system/vendor/lib/libRSDriverArm.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libRSDriverArm.so:system/vendor/lib64/libRSDriverArm.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libmalicore.bc:system/vendor/lib/libmalicore.bc \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libmalicore.bc:system/vendor/lib64/libmalicore.bc \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libbccArm.so:system/vendor/lib64/libbccArm.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/gralloc.hikey970.so:system/vendor/lib/hw/gralloc.hikey970.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/gralloc.hikey970.so:system/vendor/lib64/hw/gralloc.hikey970.so
