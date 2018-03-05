@@ -43,6 +43,9 @@ on post-fs
     chmod 0666 /dev/ion
     chmod 0666 /dev/graphics/fb0
 
+    chmod 0666 /dev/hi_vdec
+    chmod 0666 /dev/hi_venc
+
 # fake some battery state
     setprop status.battery.state Slow
     setprop status.battery.level 5
@@ -87,7 +90,7 @@ on property:sys.boot_completed=1
     # system-background is for system tasks that should only run on
     # little cores, not on bigs to be used only by init
     write /dev/cpuset/system-background/cpus 0-3
-
+    setenforce 0
 on property:usb_speed.switch=high
     write /sys/kernel/debug/f72c0000.usb/config "0"
 

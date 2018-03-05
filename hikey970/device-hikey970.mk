@@ -61,4 +61,30 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libmalicore.bc:system/vendor/lib64/libmalicore.bc \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libbccArm.so:system/vendor/lib64/libbccArm.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/gralloc.hikey970.so:system/vendor/lib/hw/gralloc.hikey970.so \
-    device/linaro/hikey/hikey970/hisilicon_libs/lib64/gralloc.hikey970.so:system/vendor/lib64/hw/gralloc.hikey970.so
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/gralloc.hikey970.so:system/vendor/lib64/hw/gralloc.hikey970.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libc_secshared.so:system/vendor/lib/libc_secshared.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libc_secshared.so:system/vendor/lib64/libc_secshared.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so:system/vendor/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/vendor.huawei.hardware.graphics.gpucommon@1.0.so:system/vendor/lib64/vendor.huawei.hardware.graphics.gpucommon@1.0.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/vendor.huawei.hardware.graphics.mediacomm@2.0.so:system/vendor/lib/vendor.huawei.hardware.graphics.mediacomm@2.0.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/vendor.huawei.hardware.graphics.mediacomm@2.0.so:system/vendor/lib64/vendor.huawei.hardware.graphics.mediacomm@2.0.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libgpucommon_vendor_client.so:system/vendor/lib/libgpucommon_vendor_client.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libgpucommon_vendor_client.so:system/vendor/lib64/libgpucommon_vendor_client.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libhiion.so:system/vendor/lib/libhiion.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libhiion.so:system/vendor/lib64/libhiion.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libmediacomm@2.0-client.so:system/vendor/lib/libmediacomm@2.0-client.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libmediacomm@2.0-client.so:system/vendor/lib64/libmediacomm@2.0-client.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libOMX.hisi.media.common.so:system/vendor/lib/libOMX.hisi.media.common.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libOMX.hisi.media.common.so:system/vendor/lib64/libOMX.hisi.media.common.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libOMX.hisi.vdec.core.so:system/vendor/lib/libOMX.hisi.vdec.core.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libOMX.hisi.vdec.core.so:system/vendor/lib64/libOMX.hisi.vdec.core.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libOMX.hisi.video.decoder.so:system/vendor/lib/libOMX.hisi.video.decoder.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libOMX.hisi.video.decoder.so:system/vendor/lib64/libOMX.hisi.video.decoder.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libOMX.hisi.video.encoder.so:system/vendor/lib/libOMX.hisi.video.encoder.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libOMX.hisi.video.encoder.so:system/vendor/lib64/libOMX.hisi.video.encoder.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libOMX_Core.so:system/vendor/lib/libOMX_Core.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libOMX_Core.so:system/vendor/lib64/libOMX_Core.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libstagefrighthw.so:system/vendor/lib/libstagefrighthw.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libstagefrighthw.so:system/vendor/lib64/libstagefrighthw.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib/libteec.so:system/vendor/lib/libteec.so \
+    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libteec.so:system/vendor/lib64/libteec.so
