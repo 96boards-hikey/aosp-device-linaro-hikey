@@ -34,6 +34,8 @@ PRODUCT_COPY_FILES += \
 # Build HiKey970 HDMI audio HAL. Experimental only may not work. FIXME
 PRODUCT_PACKAGES += audio.primary.hikey970
 
+PRODUCT_PACKAGES += libion.so
+
 PRODUCT_PACKAGES += gralloc.hikey970
 
 PRODUCT_PACKAGES += power.hikey970
@@ -60,8 +62,6 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libmalicore.bc:system/vendor/lib/libmalicore.bc \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libmalicore.bc:system/vendor/lib64/libmalicore.bc \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libbccArm.so:system/vendor/lib64/libbccArm.so \
-    device/linaro/hikey/hikey970/hisilicon_libs/lib/gralloc.hikey970.so:system/vendor/lib/hw/gralloc.hikey970.so \
-    device/linaro/hikey/hikey970/hisilicon_libs/lib64/gralloc.hikey970.so:system/vendor/lib64/hw/gralloc.hikey970.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libc_secshared.so:system/vendor/lib/libc_secshared.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libc_secshared.so:system/vendor/lib64/libc_secshared.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so:system/vendor/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so \
