@@ -1,0 +1,151 @@
+#
+# Copyright (C) 2018 The Android Open-Source Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+TARGET_USE_HIAI := true
+
+$(info TARGET_USE_HIAI is $(TARGET_USE_HIAI))
+ifeq ($(TARGET_USE_HIAI),true)
+
+LOCAL_PATH := $(call my-dir)
+
+#################################################
+#build prebuilt hiaiserver
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := hiaiserver
+LOCAL_INIT_RC := hiaiserver.rc
+LOCAL_SRC_FILES_64 := bin/hiaiserver
+LOCAL_MULTILIB := 64
+LOCAL_MODULE_CLASS := EXECUTABLES
+LOCAL_MODULE_TAGS := optional
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt ai_test
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := ai_test
+LOCAL_SRC_FILES_64 := bin/ai_test
+LOCAL_MULTILIB := 64
+LOCAL_MODULE_CLASS := EXECUTABLES
+LOCAL_MODULE_TAGS := optional
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt libai_client so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := libai_client
+LOCAL_SRC_FILES_32 := lib/libai_client.so
+LOCAL_SRC_FILES_64 := lib64/libai_client.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt vendor.huawei.hardware.ai@1.0 so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := vendor.huawei.hardware.ai@1.0
+LOCAL_SRC_FILES_32 := lib/vendor.huawei.hardware.ai@1.0.so
+LOCAL_SRC_FILES_64 := lib64/vendor.huawei.hardware.ai@1.0.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt vendor.huawei.hardware.ai@1.1 so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := vendor.huawei.hardware.ai@1.1
+LOCAL_SRC_FILES_32 := lib/vendor.huawei.hardware.ai@1.1.so
+LOCAL_SRC_FILES_64 := lib64/vendor.huawei.hardware.ai@1.1.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt libc_secshared so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := libc_secshared
+LOCAL_SRC_FILES_32 := lib/libc_secshared.so
+LOCAL_SRC_FILES_64 := lib64/libc_secshared.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+
+#################################################
+#build prebuilt libopencv_core so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := libopencv_core
+LOCAL_SRC_FILES_32 := lib/libopencv_core.so
+LOCAL_SRC_FILES_64 := lib64/libopencv_core.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt libopencv_imgcodecs so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := libopencv_imgcodecs
+LOCAL_SRC_FILES_32 := lib/libopencv_imgcodecs.so
+LOCAL_SRC_FILES_64 := lib64/libopencv_imgcodecs.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+#################################################
+#build prebuilt libopencv_imgproc so
+#################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := libopencv_imgproc
+LOCAL_SRC_FILES_32 := lib/libopencv_imgproc.so
+LOCAL_SRC_FILES_64 := lib64/libopencv_imgproc.so
+LOCAL_MULTILIB := both
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_PROPRIETARY_MODULE := true
+include $(BUILD_PREBUILT)
+
+
+endif
+
+include $(call all-makefiles-under,$(LOCAL_PATH))

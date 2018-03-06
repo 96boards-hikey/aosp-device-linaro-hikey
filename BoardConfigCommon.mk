@@ -48,6 +48,10 @@ DEVICE_MANIFEST_FILE += device/linaro/hikey/sensorhal/manifest.xml
 DEVICE_MANIFEST_FILE += device/linaro/hikey/vr/manifest.xml
 endif
 
+ifeq ($(TARGET_USE_HIAI),true)
+DEVICE_MANIFEST_FILE += device/linaro/hikey/ai/manifest.xml
+endif
+
 ifeq ($(HOST_OS), linux)
 ifeq ($(TARGET_SYSTEMIMAGES_USE_SQUASHFS), true)
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := squashfs
