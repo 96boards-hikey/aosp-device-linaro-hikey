@@ -1,0 +1,20 @@
+<manifest version="1.0" type="device">
+	<hal format="hidl">
+		<name>vendor.huawei.hardware.ai</name>
+		<transport>hwbinder</transport>
+		<version>1.0</version>
+		<interface>
+			<name>IAiEngineService</name>
+			<instance>hiaiserver</instance>
+		</interface>
+	</hal>
+	<hal format="hidl">
+		<name>android.hardware.neuralnetworks</name>
+		<transport>hwbinder</transport>
+		<version>1.0</version>
+		<interface>
+			<name>IDevice</name>
+			<instance>ipuadaptor</instance>
+		</interface>
+	</hal>
+</manifest>

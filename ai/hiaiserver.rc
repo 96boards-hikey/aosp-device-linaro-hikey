@@ -1,0 +1,4 @@
+service hiaiserver /vendor/bin/hiaiserver
+    class late_start
+    user root
+    group system root wakelock

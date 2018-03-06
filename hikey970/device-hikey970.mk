@@ -88,3 +88,7 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libstagefrighthw.so:system/vendor/lib64/libstagefrighthw.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libteec.so:system/vendor/lib/libteec.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libteec.so:system/vendor/lib64/libteec.so
+
+TARGET_USE_HIAI := true
+
+include device/linaro/hikey/hikey970/ai.mk
