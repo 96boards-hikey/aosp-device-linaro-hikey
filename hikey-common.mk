@@ -15,6 +15,8 @@ endif
 
 TARGET_PREBUILT_DTB := device/linaro/hikey-kernel/hi6220-hikey.dtb-$(TARGET_KERNEL_USE)
 
+PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
+
 ifeq ($(TARGET_KERNEL_USE), 3.18)
   TARGET_FSTAB := fstab.hikey-$(TARGET_KERNEL_USE)
   HIKEY_USE_LEGACY_TI_BLUETOOTH := true
