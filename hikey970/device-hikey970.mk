@@ -89,6 +89,9 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libteec.so:system/vendor/lib/libteec.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libteec.so:system/vendor/lib64/libteec.so
 
+# allow App to load some libraries
+PRODUCT_COPY_FILES += device/linaro/hikey/hikey970/public.libraries.txt:system/vendor/etc/public.libraries.txt
+
 TARGET_USE_HIAI := true
 
 include device/linaro/hikey/hikey970/ai.mk
