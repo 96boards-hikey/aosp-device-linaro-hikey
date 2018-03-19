@@ -45,6 +45,10 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += sys.usb.controller=ff100000.dwc3
 # Include vendor binaries
 $(call inherit-product-if-exists, vendor/linaro/hikey970/device-vendor.mk)
 
+# for update printk log level
+PRODUCT_COPY_FILES += \
+	device/linaro/hikey/hikey970/limit_printk.rc:system/vendor/etc/init/limit_printk.rc
+
 # GPU drivers
 OVERRIDE_RS_DRIVER := libRSDriverArm.so
 
