@@ -1,0 +1,3 @@
+# turn down kernel log level
+on property:init.svc.zygote_secondary=running
+    write /proc/sys/kernel/printk 4
