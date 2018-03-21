@@ -18,7 +18,9 @@
 
 #include <errno.h>
 #include <pthread.h>
-#include <sync/sync.h>
+#include <string.h>
+//#include <sync/sync.h>
+#include <android/sync.h>
 
 #include <cutils/log.h>
 #include <cutils/atomic.h>
@@ -136,7 +138,6 @@ static int gralloc_register_buffer(gralloc_module_t const *module, buffer_handle
 	else if (hnd->flags & private_handle_t::PRIV_FLAGS_USES_ION)
 	{
 #if GRALLOC_ARM_DMA_BUF_MODULE
-		int ret;
 		unsigned char *mappedAddress;
 		size_t size = hnd->size;
 		hw_module_t *pmodule = NULL;

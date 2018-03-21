@@ -568,7 +568,7 @@ static int alloc_device_alloc(alloc_device_t *dev, int w, int h, int format, int
 	return 0;
 }
 
-static int alloc_device_free(alloc_device_t *dev, buffer_handle_t handle)
+static int alloc_device_free(alloc_device_t __unused *dev, buffer_handle_t handle)
 {
 	if (private_handle_t::validate(handle) < 0)
 	{
@@ -606,8 +606,6 @@ static int alloc_device_free(alloc_device_t *dev, buffer_handle_t handle)
 	else if (hnd->flags & private_handle_t::PRIV_FLAGS_USES_ION)
 	{
 #if GRALLOC_ARM_DMA_BUF_MODULE
-		private_module_t *m = reinterpret_cast<private_module_t *>(dev->common.module);
-
 		/* Buffer might be unregistered so we need to check for invalid ump handle*/
 		if (0 != hnd->base)
 		{
