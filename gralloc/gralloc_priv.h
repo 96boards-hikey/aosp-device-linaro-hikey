@@ -60,6 +60,8 @@ struct fb_dmabuf_export
 	__u32 fd;
 	__u32 flags;
 };
+
+/* Un-comment this line to use dma_buf framebuffer */
 /*#define FBIOGET_DMABUF    _IOR('F', 0x21, struct fb_dmabuf_export)*/
 
 #if PLATFORM_SDK_VERSION >= 21
@@ -110,8 +112,6 @@ struct private_module_t
 	pthread_mutex_t lock;
 	buffer_handle_t currentBuffer;
 	int ion_client;
-	int system_heap_id;
-	bool gralloc_legacy_ion;
 
 	struct fb_var_screeninfo info;
 	struct fb_fix_screeninfo finfo;
@@ -150,7 +150,7 @@ struct private_handle_t
 		LOCK_STATE_WRITE     =   1 << 31,
 		LOCK_STATE_MAPPED    =   1 << 30,
 		LOCK_STATE_UNREGISTERED  =   1 << 29,
-		LOCK_STATE_READ_MASK =   0x1FFFFFFF
+		LOCK_STATE_READ_MASK =   0x3FFFFFFF
 	};
 
 	// ints
@@ -184,11 +184,15 @@ struct private_handle_t
 #endif
 
 	// Following members is for framebuffer only
-	int     shallow_fbdev_fd; // shallow copy, not dup'ed
+	int     fd; //Shallow copy, DO NOT duplicate
 	int     offset;
-
+	union
+	{
+		void *fb_paddr;
+		uint64_t fb_paddr_padding;
+	};
 #if GRALLOC_ARM_DMA_BUF_MODULE
-	ion_user_handle_t ion_hnd_UNUSED;
+	ion_user_handle_t ion_hnd;
 #endif
 
 #if GRALLOC_ARM_DMA_BUF_MODULE
@@ -221,11 +225,12 @@ struct private_handle_t
 		yuv_info(MALI_YUV_NO_INFO),
 		ump_id((int)secure_id),
 		ump_mem_handle((int)handle),
-		shallow_fbdev_fd(0),
-		offset(0)
+		fd(0),
+		offset(0),
+		fb_paddr(NULL)
 #if GRALLOC_ARM_DMA_BUF_MODULE
 		,
-		ion_hnd_UNUSED(ION_INVALID_HANDLE)
+		ion_hnd(ION_INVALID_HANDLE)
 #endif
 
 	{
@@ -255,9 +260,10 @@ struct private_handle_t
 		ump_id((int)UMP_INVALID_SECURE_ID),
 		ump_mem_handle((int)UMP_INVALID_MEMORY_HANDLE),
 #endif
-		shallow_fbdev_fd(0),
+		fd(0),
 		offset(0),
-		ion_hnd_UNUSED(ION_INVALID_HANDLE)
+		fb_paddr(NULL),
+		ion_hnd(ION_INVALID_HANDLE)
 
 	{
 		version = sizeof(native_handle);
@@ -267,7 +273,7 @@ struct private_handle_t
 
 #endif
 
-	private_handle_t(int flags, int usage, int size, void *base, int lock_state, int fb_file, int fb_offset):
+	private_handle_t(int flags, int usage, int size, void *base, int lock_state, int fb_file, int fb_offset, void *fb_paddr):
 #if GRALLOC_ARM_DMA_BUF_MODULE
 		share_fd(-1),
 #endif
@@ -288,11 +294,12 @@ struct private_handle_t
 		ump_id((int)UMP_INVALID_SECURE_ID),
 		ump_mem_handle((int)UMP_INVALID_MEMORY_HANDLE),
 #endif
-		shallow_fbdev_fd(fb_file),
-		offset(fb_offset)
+		fd(fb_file),
+		offset(fb_offset),
+		fb_paddr(fb_paddr)
 #if GRALLOC_ARM_DMA_BUF_MODULE
 		,
-		ion_hnd_UNUSED(ION_INVALID_HANDLE)
+		ion_hnd(ION_INVALID_HANDLE)
 #endif
 
 	{
@@ -315,21 +322,23 @@ struct private_handle_t
 	{
 		const private_handle_t *hnd = (const private_handle_t *)h;
 
-		if (!h || h->version != sizeof(native_handle) || hnd->magic != sMagic)
+		if (!hnd || hnd->version != sizeof(native_handle) || hnd->magic != sMagic)
 		{
 			return -EINVAL;
 		}
 
 		int numFds = sNumFds;
 		int numInts = (sizeof(private_handle_t) - sizeof(native_handle)) / sizeof(int) - sNumFds;
+
 #if GRALLOC_ARM_DMA_BUF_MODULE
-		if (hnd->share_fd < 0) {
+		if (hnd->share_fd < 0)
+		{
 			numFds--;
 			numInts++;
 		}
 #endif
 
-		if (h->numFds != numFds || h->numInts != numInts)
+		if (hnd->numFds != numFds || hnd->numInts != numInts)
 		{
 			return -EINVAL;
 		}
