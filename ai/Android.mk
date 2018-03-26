@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 
-TARGET_USE_HIAI := true
-
 $(info TARGET_USE_HIAI is $(TARGET_USE_HIAI))
 ifeq ($(TARGET_USE_HIAI),true)
 
@@ -28,18 +26,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := hiaiserver
 LOCAL_INIT_RC := hiaiserver.rc
 LOCAL_SRC_FILES_64 := bin/hiaiserver
-LOCAL_MULTILIB := 64
-LOCAL_MODULE_CLASS := EXECUTABLES
-LOCAL_MODULE_TAGS := optional
-LOCAL_PROPRIETARY_MODULE := true
-include $(BUILD_PREBUILT)
-
-#################################################
-#build prebuilt ai_test
-#################################################
-include $(CLEAR_VARS)
-LOCAL_MODULE := ai_test
-LOCAL_SRC_FILES_64 := bin/ai_test
 LOCAL_MULTILIB := 64
 LOCAL_MODULE_CLASS := EXECUTABLES
 LOCAL_MODULE_TAGS := optional
@@ -101,50 +87,6 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .so
 LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_PREBUILT)
-
-
-#################################################
-#build prebuilt libopencv_core so
-#################################################
-include $(CLEAR_VARS)
-LOCAL_MODULE := libopencv_core
-LOCAL_SRC_FILES_32 := lib/libopencv_core.so
-LOCAL_SRC_FILES_64 := lib64/libopencv_core.so
-LOCAL_MULTILIB := both
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_SUFFIX := .so
-LOCAL_PROPRIETARY_MODULE := true
-include $(BUILD_PREBUILT)
-
-#################################################
-#build prebuilt libopencv_imgcodecs so
-#################################################
-include $(CLEAR_VARS)
-LOCAL_MODULE := libopencv_imgcodecs
-LOCAL_SRC_FILES_32 := lib/libopencv_imgcodecs.so
-LOCAL_SRC_FILES_64 := lib64/libopencv_imgcodecs.so
-LOCAL_MULTILIB := both
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_SUFFIX := .so
-LOCAL_PROPRIETARY_MODULE := true
-include $(BUILD_PREBUILT)
-
-#################################################
-#build prebuilt libopencv_imgproc so
-#################################################
-include $(CLEAR_VARS)
-LOCAL_MODULE := libopencv_imgproc
-LOCAL_SRC_FILES_32 := lib/libopencv_imgproc.so
-LOCAL_SRC_FILES_64 := lib64/libopencv_imgproc.so
-LOCAL_MULTILIB := both
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_SUFFIX := .so
-LOCAL_PROPRIETARY_MODULE := true
-include $(BUILD_PREBUILT)
-
 
 endif
 
