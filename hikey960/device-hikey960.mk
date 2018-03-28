@@ -36,9 +36,11 @@ PRODUCT_PACKAGES += audio.primary.hikey960
 
 PRODUCT_PACKAGES += gralloc.hikey960
 
+#binary blobs from ARM
+PRODUCT_PACKAGES +=	libGLES_mali.so libbccArm.so libRSDriverArm.so libmalicore.bc \
+			vulkan.hikey960.so android.hardware.renderscript@1.0-impl.so \
+			END_USER_LICENCE_AGREEMENT.txt
+
 PRODUCT_PACKAGES += power.hikey960
 
 PRODUCT_PACKAGES += sensors.hikey960
-
-# Include vendor binaries
-$(call inherit-product-if-exists, vendor/linaro/hikey960/device-vendor.mk)
