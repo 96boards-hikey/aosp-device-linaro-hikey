@@ -41,5 +41,5 @@ PRODUCT_PACKAGES += power.hikey
 # Sensors HAL
 PRODUCT_PACKAGES += sensors.hikey
 
-# Include vendor binaries
-$(call inherit-product-if-exists, vendor/linaro/hikey/device-vendor.mk)
+# Include mali blobs from ARM
+PRODUCT_PACKAGES += libGLES_mali.so END_USER_LICENCE_AGREEMENT.txt
