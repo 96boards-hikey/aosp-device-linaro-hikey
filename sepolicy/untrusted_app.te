@@ -1,0 +1,4 @@
+# allow app to hiaiserver binder calls
+allow untrusted_app hiaiserver:binder { call transfer };
+allow untrusted_app_25 hiaiserver:binder { call transfer };
+allow untrusted_app_all hiaiserver:binder { call transfer };
