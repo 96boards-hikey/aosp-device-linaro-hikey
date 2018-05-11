@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 
-$(info TARGET_USE_HIAI is $(TARGET_USE_HIAI))
 ifeq ($(TARGET_USE_HIAI),true)
 
 LOCAL_PATH := $(call my-dir)
@@ -88,6 +87,5 @@ LOCAL_MODULE_SUFFIX := .so
 LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_PREBUILT)
 
-endif
-
 include $(call all-makefiles-under,$(LOCAL_PATH))
+endif
