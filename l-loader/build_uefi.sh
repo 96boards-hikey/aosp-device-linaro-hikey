@@ -217,7 +217,7 @@ case "${PLATFORM}" in
 	# Generate partition table with a patched sgdisk to force
 	# default alignment (2048) and sector size (4096)
 	if [ $GENERATE_PTABLE ]; then
-		PTABLE=aosp-32g SECTOR_SIZE=4096 SGDISK=./sgdisk bash -x generate_ptable.sh
+		PTABLE=aosp-64g SECTOR_SIZE=4096 SGDISK=./sgdisk bash -x generate_ptable.sh
 	fi
 	;;
 esac
