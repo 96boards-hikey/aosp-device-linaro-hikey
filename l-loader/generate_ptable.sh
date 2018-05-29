@@ -31,7 +31,7 @@ case ${PTABLE} in
   aosp-32g*|linux-32g)
     SECTOR_NUMBER=62447650    # count with 512-byte block size
     ;;
-  aosp-64g|linux-64g)
+  aosp-64g*|linux-64g)
     SECTOR_NUMBER=124895300   # count with 512-byte block size
     ;;
 esac
@@ -117,7 +117,7 @@ case ${PTABLE} in
     #[10: userdata: 3556M-End]
     fakeroot ${SGDISK} -n -E -t 10:8300 -u 10:064111F6-463B-4CE1-876B-13F3684CE164 -c 10:"userdata" -p ${TEMP_FILE}
     ;;
-  aosp-32g*|aosp-64g)
+  aosp-32g*|aosp-64g*)
     dd if=/dev/zero of=${TEMP_FILE} bs=${SECTOR_SIZE} count=${SECTOR_NUMBER} conv=sparse
     fakeroot ${SGDISK} -U 2CB85345-6A91-4043-8203-723F0D28FBE8 -v ${TEMP_FILE}
     #[1: xloader_reserved1: 1M-2M]
@@ -177,11 +177,11 @@ case ${PTABLE} in
         #[14: reserved: 5891M-5892M]
         fakeroot ${SGDISK} -n 14:0:+1M -t 14:0700 -u 14:611eac6b-bc42-4d72-90ac-418569c8e9b8 -c 14:"reserved" ${TEMP_FILE}
         case ${PTABLE} in
-          aosp-32g)
+          aosp-64g)
             #[15: userdata: 5892M-End]
             fakeroot ${SGDISK} -n -E -t 15:8300 -u 15:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 15:"userdata" ${TEMP_FILE}
             ;;
-          aosp-32g-spare)
+          aosp-64g-spare)
             #[15: userdata: 5892M-6892M]
             fakeroot ${SGDISK} -n 15:0:+1000M -t 15:8300 -u 15:fea80d9c-f3e3-45d9-aed0-1d06e4abd77f -c 15:"userdata" ${TEMP_FILE}
             #[16: swap: 6892M-End]

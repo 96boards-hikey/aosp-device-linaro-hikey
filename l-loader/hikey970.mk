@@ -1,6 +1,6 @@
 BL1=bl1.bin
 NS_BL1U=BL33_AP_UEFI.fd
-PTABLE_LST:=aosp-32g aosp-32g-spare linux-32g
+PTABLE_LST:=aosp-64g aosp-64g-spare linux-64g
 
 .PHONY: all
 all: l-loader.bin prm_ptable.img
