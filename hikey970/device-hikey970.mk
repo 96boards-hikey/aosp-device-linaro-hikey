@@ -66,8 +66,6 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libmalicore.bc:system/vendor/lib/libmalicore.bc \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libmalicore.bc:system/vendor/lib64/libmalicore.bc \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libbccArm.so:system/vendor/lib64/libbccArm.so \
-    device/linaro/hikey/hikey970/hisilicon_libs/lib/libc_secshared.so:system/vendor/lib/libc_secshared.so \
-    device/linaro/hikey/hikey970/hisilicon_libs/lib64/libc_secshared.so:system/vendor/lib64/libc_secshared.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so:system/vendor/lib/vendor.huawei.hardware.graphics.gpucommon@1.0.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/vendor.huawei.hardware.graphics.gpucommon@1.0.so:system/vendor/lib64/vendor.huawei.hardware.graphics.gpucommon@1.0.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/vendor.huawei.hardware.graphics.mediacomm@2.0.so:system/vendor/lib/vendor.huawei.hardware.graphics.mediacomm@2.0.so \
@@ -92,6 +90,8 @@ PRODUCT_COPY_FILES += \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libstagefrighthw.so:system/vendor/lib64/libstagefrighthw.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib/libteec.so:system/vendor/lib/libteec.so \
     device/linaro/hikey/hikey970/hisilicon_libs/lib64/libteec.so:system/vendor/lib64/libteec.so
+    #device/linaro/hikey/hikey970/hisilicon_libs/lib/libc_secshared.so:system/vendor/lib/libc_secshared.so \
+    #device/linaro/hikey/hikey970/hisilicon_libs/lib64/libc_secshared.so:system/vendor/lib64/libc_secshared.so \
 
 # allow App to load some libraries
 PRODUCT_COPY_FILES += device/linaro/hikey/hikey970/public.libraries.txt:system/vendor/etc/public.libraries.txt
